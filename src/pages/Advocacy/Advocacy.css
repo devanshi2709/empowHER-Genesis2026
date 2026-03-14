@@ -1,0 +1,244 @@
+/* Advocacy page — premium healthcare dashboard */
+
+.advocacy-page-heading {
+  margin-bottom: 2.5rem;
+}
+
+.advocacy-page-heading h1 {
+  font-size: 1.75rem;
+  font-weight: 600;
+  letter-spacing: 0.01em;
+  margin: 0;
+  color: #f4f4f4;
+}
+
+.advocacy-page-heading p {
+  margin: 0.5rem 0 0;
+  color: rgba(244, 244, 244, 0.78);
+  font-size: 1rem;
+  line-height: 1.5;
+  max-width: 42ch;
+}
+
+/* Empty state */
+.advocacy-empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 320px;
+  padding: 3rem 2rem;
+  text-align: center;
+}
+
+.advocacy-empty .glass-surface {
+  width: 100%;
+  max-width: 420px;
+  padding: 2.5rem 2rem;
+}
+
+.advocacy-empty__title {
+  font-size: 1.25rem;
+  font-weight: 600;
+  margin: 0 0 0.75rem;
+  color: #f4f4f4;
+}
+
+.advocacy-empty__text {
+  margin: 0 0 1.75rem;
+  font-size: 0.95rem;
+  line-height: 1.6;
+  color: rgba(244, 244, 244, 0.8);
+}
+
+/* Dashboard container */
+.advocacy-dashboard {
+  padding: 2.5rem 3rem;
+}
+
+@media (max-width: 900px) {
+  .advocacy-dashboard {
+    padding: 1.75rem 1.5rem;
+  }
+}
+
+/* Two-column layout */
+.advocacy-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1.4fr);
+  gap: 3rem;
+  align-items: start;
+}
+
+@media (max-width: 768px) {
+  .advocacy-grid {
+    grid-template-columns: 1fr;
+    gap: 2rem;
+  }
+}
+
+/* Left column — media & metadata */
+.advocacy-media {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+
+.advocacy-media__frame {
+  position: relative;
+  border-radius: var(--glass-radius-md);
+  overflow: hidden;
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.4);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  background: rgba(0, 0, 0, 0.35);
+}
+
+.advocacy-media__frame img {
+  display: block;
+  width: 100%;
+  aspect-ratio: 4 / 3;
+  object-fit: cover;
+  vertical-align: middle;
+}
+
+.advocacy-media__meta {
+  font-size: 0.8rem;
+  color: rgba(244, 244, 244, 0.5);
+  letter-spacing: 0.02em;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 0.5rem 1rem;
+}
+
+.advocacy-media__meta code {
+  font-family: ui-monospace, monospace;
+  font-size: 0.78rem;
+  opacity: 0.9;
+}
+
+.advocacy-media__meta strong {
+  text-transform: uppercase;
+  font-weight: 600;
+  color: rgba(244, 244, 244, 0.6);
+}
+
+/* Right column — insights & actions */
+.advocacy-insights {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.advocacy-insights__header {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.75rem 1rem;
+}
+
+.advocacy-insights__title {
+  margin: 0;
+  font-size: 1.35rem;
+  font-weight: 600;
+  color: #f4f4f4;
+  letter-spacing: 0.01em;
+}
+
+.advocacy-divider {
+  height: 1px;
+  border: 0;
+  background: linear-gradient(
+    90deg,
+    rgba(255, 255, 255, 0.2) 0%,
+    rgba(255, 255, 255, 0.06) 50%,
+    transparent 100%
+  );
+  margin: 0;
+}
+
+/* WatsonX Insight tile */
+.advocacy-tile-wrap {
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: var(--glass-radius-sm);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  padding: 1.25rem 1.5rem;
+}
+
+.advocacy-tile-wrap .advocacy-tile-label {
+  font-size: 0.7rem;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: rgba(244, 244, 244, 0.5);
+  margin-bottom: 0.75rem;
+  display: block;
+}
+
+.advocacy-tile-wrap .advocacy-tile-content {
+  font-size: 0.95rem;
+  line-height: 1.7;
+  color: rgba(244, 244, 244, 0.92);
+  margin: 0;
+}
+
+/* Action buttons */
+.advocacy-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem 1rem;
+  margin-top: 0.5rem;
+}
+
+.advocacy-actions .cds--btn {
+  margin: 0;
+}
+
+/* Benefits modal body (Carbon Modal inherits its own styling) */
+.advocacy-modal-body {
+  padding: 0.25rem 0;
+}
+
+.advocacy-modal-body p {
+  margin: 0 0 1rem;
+  font-size: 0.9375rem;
+  line-height: 1.5;
+}
+
+.advocacy-modal-provider,
+.advocacy-modal-plan {
+  font-weight: 500;
+}
+
+.advocacy-modal-description {
+  color: var(--cds-text-secondary, #525252);
+  margin-bottom: 1.25rem !important;
+}
+
+.advocacy-modal-breakdown {
+  margin: 1.25rem 0;
+}
+
+.advocacy-modal-breakdown-label {
+  display: block;
+  font-size: 0.75rem;
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+  color: var(--cds-text-secondary, #525252);
+}
+
+.advocacy-modal-action {
+  margin-top: 1rem;
+  margin-bottom: 0 !important;
+  padding-top: 0.75rem;
+  border-top: 1px solid var(--cds-border-subtle, #e0e0e0);
+}
+
+/* Toast notification — fixed top-right overlay */
+.advocacy-toast-container {
+  position: fixed;
+  top: 1rem;
+  right: 1rem;
+  z-index: 9999;
+  max-width: 400px;
+}

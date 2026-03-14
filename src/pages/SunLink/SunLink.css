@@ -1,60 +1,220 @@
-.scan-container {
-  display: flex;
-  justify-content: center;
-  align-items: flex-start;
-  padding: 2rem;
-  min-height: 100vh;
+/* ─── The Lens: workspace container (floating glass) ────────────────────────── */
+.sunlink-workspace-lens.glass-surface {
+  backdrop-filter: blur(40px);
+  -webkit-backdrop-filter: blur(40px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0.02)), var(--glass-bg);
+  box-shadow: var(--glass-shadow), inset 0 0 0 1px rgba(255, 255, 255, 0.12);
 }
 
-.scan-title {
-  font-size: 2rem;
-  font-weight: 600;
-  margin-bottom: 0.5rem;
+/* ─── Typography & hierarchy — bold, sharp, LIVE indicator ───────────────────── */
+.sunlink-page .glass-page-heading h1 {
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  color: #ffffff;
 }
 
-.scan-description {
-  font-size: 1rem;
-  margin-bottom: 1.5rem;
-  color: rgba(244, 244, 244, 0.7);
+.sunlink-page .glass-page-heading p {
+  color: rgba(244, 244, 244, 0.9);
+  font-size: 0.9875rem;
 }
 
-/* Upload area */
-.upload-area {
+.sunlink-workspace-lens .glass-page-heading h1 {
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  color: #ffffff;
+}
+
+.sunlink-workspace-lens .glass-page-heading h1::after {
+  content: " LIVE";
+  display: inline-block;
+  margin-left: 0.4em;
+  font-size: 0.45em;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  vertical-align: middle;
+  color: #39ff14;
+  text-shadow: 0 0 8px rgba(57, 255, 20, 0.6);
+}
+
+.sunlink-workspace-lens .glass-page-heading p {
+  color: rgba(244, 244, 244, 0.9);
+}
+
+/* ─── SunLink workspace layout (centered & balanced) ───────────────────────── */
+.sunlink-workspace {
   display: flex;
   flex-direction: column;
-  justify-content: center;
   align-items: center;
+  justify-content: flex-start;
+  gap: 2.5rem;
+  padding: 0.5rem 0 1.5rem;
   width: 100%;
-  min-height: 220px;
-  border: 2px dashed #8d8d8d;
-  border-radius: 4px;
-  margin-bottom: 1.5rem;
-  background-color: rgba(255, 255, 255, 0.05);
-  padding: 1rem;
   box-sizing: border-box;
-  transition: opacity 0.2s;
 }
 
-.upload-area--disabled {
-  opacity: 0.45;
+/* ─── The Portal: hero dropzone (large, centered, glowing, pulse) ────────────── */
+@keyframes portalPulse {
+  0%   { opacity: 0.4; }
+  50%  { opacity: 1; }
+  100% { opacity: 0.4; }
+}
+
+.sunlink-dropzone-wrap {
+  width: 100%;
+  max-width: 420px;
+  min-height: 280px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 1.25rem;
+  padding: 2.5rem 2rem;
+  border-radius: 24px;
+  background: rgba(0, 0, 0, 0.2);
+  box-sizing: border-box;
+  transition: background 0.25s ease, box-shadow 0.25s ease;
+  border: 3px dashed #8A3FFC;
+  box-shadow: 0 0 32px rgba(138, 63, 252, 0.25);
+  animation: portalPulse 2.5s ease-in-out infinite;
+  filter: drop-shadow(0 0 8px rgba(138, 63, 252, 0.5));
+}
+
+.sunlink-dropzone-wrap:hover:not(.sunlink-dropzone-wrap--disabled) {
+  background: rgba(138, 63, 252, 0.06);
+  box-shadow: 0 0 40px rgba(138, 63, 252, 0.4);
+}
+
+.sunlink-dropzone-wrap--disabled {
+  opacity: 0.5;
   pointer-events: none;
+  animation: none;
 }
 
-.upload-area__text {
+.sunlink-dropzone-label {
   font-size: 1rem;
-  color: rgba(244, 244, 244, 0.6);
+  color: #ffffff;
   text-align: center;
-  padding: 1rem;
+  margin: 0;
+  font-weight: 500;
 }
 
-/* Scan frame wrapper */
+/* Inner glass tint for the FileUploaderDropContainer */
+.sunlink-portal-inner {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.75rem;
+  padding: 1.5rem 1.25rem;
+  border-radius: 18px;
+  background: rgba(255, 255, 255, 0.03);
+}
+
+.sunlink-portal-icon {
+  color: #00d4ff;
+}
+
+/* "Drop image here" text + link: white + Neon Cyan */
+.sunlink-dropzone-wrap .cds--file__drop-container,
+.sunlink-dropzone-wrap .cds--file__drop-container .cds--link,
+.sunlink-dropzone-wrap [class*="cds--file"] .cds--link,
+.sunlink-dropzone-wrap label[class*="cds--file"] {
+  color: #00d4ff !important;
+  text-decoration: underline;
+}
+
+.sunlink-dropzone-wrap .cds--file__drop-container .cds--link:hover,
+.sunlink-dropzone-wrap .cds--link:hover {
+  color: #5ee7ff !important;
+  text-decoration: underline;
+}
+
+.sunlink-dropzone-wrap label {
+  color: #00d4ff !important;
+  cursor: pointer;
+  text-decoration: underline;
+}
+
+/* Ensure the drop container label text (non-link) is white when it says "Drop image here" */
+.sunlink-dropzone-wrap .cds--file__drop-container,
+.sunlink-dropzone-wrap .cds--file-browse-btn {
+  color: #ffffff;
+}
+
+/* Camera toggle — sleek ghost button, centered, with icon */
+.sunlink-camera-toggle {
+  margin-top: 0.5rem;
+  align-self: center;
+}
+
+/* ─── Image preview — smooth appear animation ────────────────────────────── */
+@keyframes sunlinkPreviewIn {
+  from {
+    opacity: 0;
+    transform: scale(0.97);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+.sunlink-preview-wrap {
+  width: 100%;
+  max-width: 520px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+  animation: sunlinkPreviewIn 0.4s ease-out;
+}
+
+.sunlink-preview-frame {
+  position: relative;
+  width: 100%;
+  border-radius: 8px;
+  overflow: hidden;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  background: rgba(0, 0, 0, 0.25);
+}
+
+.sunlink-preview-wrap--scanning .sunlink-preview-frame {
+  border-color: rgba(99, 210, 255, 0.5);
+  box-shadow: 0 0 20px rgba(99, 210, 255, 0.25);
+}
+
+.sunlink-preview-wrap--complete .sunlink-preview-frame {
+  border-color: rgba(66, 255, 161, 0.45);
+  box-shadow: 0 0 20px rgba(66, 255, 161, 0.2);
+}
+
+.sunlink-preview-img {
+  display: block;
+  width: 100%;
+  max-height: 300px;
+  object-fit: cover;
+  margin: 0 auto;
+  border-radius: 8px;
+}
+
+.sunlink-preview-frame .scan-line,
+.sunlink-preview-frame .scan-glow {
+  border-radius: 8px;
+}
+
+.sunlink-clear-btn {
+  align-self: center;
+}
+
+/* ─── Camera view ──────────────────────────────────────────────────────────── */
 .scan-frame {
   position: relative;
   width: 100%;
-  margin-top: 1rem;
+  max-width: 520px;
   border-radius: 8px;
   overflow: hidden;
-  border: 2px solid transparent;
+  border: 2px solid rgba(255, 255, 255, 0.12);
   transition: border-color 0.3s;
 }
 
@@ -75,10 +235,18 @@
   border-radius: 6px;
 }
 
-/* Scan line */
+.sunlink-camera-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-top: 0.75rem;
+  justify-content: center;
+}
+
+/* Scan line — high-contrast (bright cyan/purple) for demo visibility */
 @keyframes scanLine {
   0%   { top: 0%; }
-  50%  { top: calc(100% - 3px); }
+  50%  { top: calc(100% - 4px); }
   100% { top: 0%; }
 }
 
@@ -86,50 +254,74 @@
   position: absolute;
   left: 0;
   width: 100%;
-  height: 3px;
-  background: linear-gradient(90deg, transparent, #63d2ff, #a78bfa, #63d2ff, transparent);
-  box-shadow: 0 0 12px 4px rgba(99, 210, 255, 0.7);
+  height: 4px;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    #00d4ff 15%,
+    #7c3aed 50%,
+    #00d4ff 85%,
+    transparent
+  );
+  box-shadow:
+    0 0 16px 4px rgba(0, 212, 255, 0.8),
+    0 0 24px 6px rgba(124, 58, 237, 0.5);
   animation: scanLine 1.4s ease-in-out infinite;
   pointer-events: none;
   z-index: 10;
 }
 
-/* Glow overlay */
 @keyframes pulseGlow {
-  0%, 100% { opacity: 0.08; }
-  50%       { opacity: 0.22; }
+  0%, 100% { opacity: 0.12; }
+  50%       { opacity: 0.28; }
 }
 
 .scan-glow {
   position: absolute;
   inset: 0;
-  background: radial-gradient(ellipse at center, rgba(99, 210, 255, 0.3) 0%, transparent 70%);
+  background: radial-gradient(
+    ellipse at center,
+    rgba(0, 212, 255, 0.35) 0%,
+    rgba(124, 58, 237, 0.2) 40%,
+    transparent 70%
+  );
   animation: pulseGlow 1.4s ease-in-out infinite;
   pointer-events: none;
   z-index: 9;
 }
 
-/* Status + progress */
-.scan-status {
+/* ─── Notifications ────────────────────────────────────────────────────────── */
+.sunlink-notification {
+  margin-top: 0;
+  width: 100%;
+  max-width: 520px;
+}
+
+/* ─── Scanning status (readable contrast) ───────────────────────────────────── */
+.sunlink-scan-status {
   display: flex;
   align-items: center;
   gap: 0.75rem;
-  margin-top: 1rem;
   flex-wrap: wrap;
+  width: 100%;
+  max-width: 520px;
 }
 
-.scan-status__text {
-  color: #63d2ff;
+.sunlink-scan-status .cds--loading {
+  flex-shrink: 0;
+}
+
+.sunlink-scan-status__label {
+  color: #e0eeff;
   font-weight: 500;
-  font-size: 0.95rem;
-  letter-spacing: 0.04em;
-  min-width: 220px;
-  transition: opacity 0.3s ease;
+  font-size: 0.9375rem;
+  letter-spacing: 0.02em;
+  min-width: 160px;
 }
 
-.scan-status__pct {
-  font-size: 0.85rem;
-  color: rgba(244, 244, 244, 0.6);
+.sunlink-scan-status__pct {
+  font-size: 0.875rem;
+  color: rgba(244, 244, 244, 0.8);
   min-width: 36px;
 }
 
@@ -137,7 +329,7 @@
   flex: 1;
   min-width: 120px;
   height: 6px;
-  background: rgba(255, 255, 255, 0.1);
+  background: rgba(255, 255, 255, 0.12);
   border-radius: 999px;
   overflow: hidden;
 }
@@ -149,7 +341,49 @@
   transition: width 0.05s linear;
 }
 
-/* Result card */
+/* ─── Control Center — huge CTA with massive glow ───────────────────────────── */
+.sunlink-control-center {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding-top: 2.5rem;
+  padding-bottom: 1rem;
+  margin-top: 0.5rem;
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.sunlink-start-btn {
+  min-width: 260px;
+  height: 64px;
+  padding-left: 2.5rem;
+  padding-right: 2.5rem;
+  font-weight: 700;
+  font-size: 1.0625rem;
+  letter-spacing: 0.02em;
+  color: #ffffff !important;
+  background: #0f62fe !important;
+  background-color: #0f62fe !important;
+  border: none !important;
+}
+
+.sunlink-start-btn:hover:not(:disabled) {
+  background: #3b82ff !important;
+  background-color: #3b82ff !important;
+  color: #ffffff !important;
+}
+
+.sunlink-start-btn:focus {
+  outline: 2px solid #0f62fe;
+  outline-offset: 2px;
+}
+
+/* ─── Legacy / shared (Health Insight Card, etc.) ───────────────────────────── */
+.upload-area,
+.upload-area__text {
+  /* Kept for any legacy refs; primary styles above */
+}
+
 .scan-result {
   margin-top: 1rem;
   padding: 0.85rem 1.1rem;
@@ -175,7 +409,6 @@
   line-height: 1.55;
 }
 
-/* Health Insight Card */
 .insight-card {
   display: flex;
   flex-direction: column;
@@ -235,15 +468,16 @@
 }
 
 @media (max-width: 640px) {
-  .scan-container {
-    padding: 1rem;
+  .sunlink-workspace {
+    gap: 1.5rem;
+    padding: 0.25rem 0 0.75rem;
   }
 
-  .scan-title {
-    font-size: 1.5rem;
+  .sunlink-dropzone-wrap {
+    padding: 1.5rem 1rem;
   }
 
-  .scan-status {
+  .sunlink-scan-status {
     flex-direction: column;
     align-items: flex-start;
   }
@@ -251,5 +485,13 @@
   .scan-progress-bar {
     width: 100%;
   }
-}
 
+  .sunlink-control-center {
+    padding-top: 1.5rem;
+  }
+
+  .sunlink-start-btn {
+    width: 100%;
+    height: 56px;
+  }
+}

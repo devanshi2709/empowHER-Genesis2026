@@ -1,5 +1,6 @@
 import React, { useState, useRef, useEffect, useCallback } from "react";
 import { Button, FileUploaderDropContainer, InlineNotification, Loading } from "@carbon/react";
+import { Camera, Launch, Upload } from "@carbon/icons-react";
 import { useNavigate } from "react-router-dom";
 import { PageLayout as SharedPageLayout } from "../../components/shared/PageLayout";
 import { GlassCard as SharedGlassCard } from "../../components/shared/GlassCard";
@@ -238,105 +239,141 @@ const SunLink: React.FC = () => {
     }
   };
 
+  const showDropzone = !uploadedImage && !isCameraActive;
   const hasPreview = uploadedImage || isCameraActive;
 
   return (
+    <div className="sunlink-page">
     <SharedPageLayout
       title="SunLink Scan"
       description="Capture or upload an image to check for early health signals."
     >
       {/* Scan input card */}
-      <SharedGlassCard title="Scan Workspace">
-        {/* Upload area */}
-        <div className={`upload-area${isScanning ? " upload-area--disabled" : ""}`}>
-          <span className="upload-area__text">
-            Upload or drag an image of the area you want HelioMind to analyze.
-          </span>
-          <FileUploaderDropContainer
-            accept={["image/jpeg", "image/png", "image/webp"]}
-            labelText="Drop image here or click to browse"
-            multiple={false}
-            name="scan-image"
-            disabled={isScanning}
-            onAddFiles={handleFilesAdded}
-          />
-          {!isCameraActive && (
-            <Button
-              kind="tertiary"
-              size="sm"
-              onClick={handleStartCamera}
-              disabled={isScanning}
-              style={{ marginTop: "0.75rem" }}
-            >
-              Use live camera instead
-            </Button>
-          )}
-        </div>
-
-        {/* Preview + scan overlay */}
-        {hasPreview && (
-          <div className={`scan-frame${isScanning ? " scan-frame--active" : ""}${scanComplete && !scanError ? " scan-frame--complete" : ""}`}>
-            {uploadedImage && <img src={uploadedImage} alt="Uploaded" className="scan-frame__media" />}
-            {isCameraActive && (
-              <>
-                <video ref={videoRef} autoPlay playsInline className="scan-frame__media" />
-                <div style={{ display: "flex", gap: "0.5rem", marginTop: "0.5rem" }}>
-                  <Button kind="secondary" size="sm" onClick={handleCapturePhoto} disabled={isScanning}>
-                    Capture photo
-                  </Button>
-                  <Button kind="ghost" size="sm" onClick={stopCamera} disabled={isScanning}>
-                    Stop camera
-                  </Button>
-                </div>
-              </>
-            )}
-            {isScanning && <div className="scan-line" />}
-            {isScanning && <div className="scan-glow" />}
-          </div>
-        )}
-
-        {cameraError && (
-          <InlineNotification
-            kind="error"
-            lowContrast
-            title="Camera unavailable"
-            subtitle={cameraError}
-            onCloseButtonClick={() => setCameraError(null)}
-            style={{ marginTop: "0.75rem" }}
-          />
-        )}
-
-        {/* Progress status */}
-        {isScanning && (
-          <div className="scan-status">
-            <span className="scan-status__text">{scanStepLabel}</span>
-            <div className="scan-progress-bar">
-              <div className="scan-progress-bar__fill" style={{ width: `${progress}%` }} />
+      <SharedGlassCard
+        className="sunlink-workspace-lens"
+        title="Scan Workspace"
+        subtitle="Upload or capture an image to begin."
+      >
+        <div className="sunlink-workspace">
+          {/* Upload dropzone — hidden when image is set or camera is active */}
+          {showDropzone && (
+            <div className={`sunlink-dropzone-wrap${isScanning ? " sunlink-dropzone-wrap--disabled" : ""}`}>
+              <span className="sunlink-dropzone-label">
+                Upload or drag an image of the area you want EmpowHER to analyze.
+              </span>
+              <div className="sunlink-portal-inner">
+                <Upload className="sunlink-portal-icon" size={24} />
+                <FileUploaderDropContainer
+                  accept={["image/jpeg", "image/png", "image/webp"]}
+                  labelText="Drop image here or click to browse"
+                  multiple={false}
+                  name="scan-image"
+                  disabled={isScanning}
+                  onAddFiles={handleFilesAdded}
+                />
+              </div>
+              <Button
+                kind="ghost"
+                size="sm"
+                renderIcon={Camera}
+                onClick={handleStartCamera}
+                disabled={isScanning}
+                className="sunlink-camera-toggle"
+              >
+                Use live camera instead
+              </Button>
             </div>
-            <span className="scan-status__pct">{progress}%</span>
-            <Loading withOverlay={false} description="Analyzing image" small />
+          )}
+
+          {/* Image preview — when file selected or photo captured (dropzone hidden) */}
+          {uploadedImage && !isCameraActive && (
+            <div className={`sunlink-preview-wrap${isScanning ? " sunlink-preview-wrap--scanning" : ""}${scanComplete && !scanError ? " sunlink-preview-wrap--complete" : ""}`}>
+              <div className="sunlink-preview-frame">
+                <img
+                  src={uploadedImage}
+                  alt="Uploaded for scan"
+                  className="sunlink-preview-img"
+                />
+                {isScanning && <div className="scan-line" />}
+                {isScanning && <div className="scan-glow" />}
+              </div>
+              <Button
+                kind="ghost"
+                size="sm"
+                onClick={() => { setUploadedImage(null); setScanComplete(false); setResult(null); setScanError(null); }}
+                disabled={isScanning}
+                className="sunlink-clear-btn"
+              >
+                Clear / Remove image
+              </Button>
+            </div>
+          )}
+
+          {/* Live camera view */}
+          {isCameraActive && (
+            <div className={`scan-frame${isScanning ? " scan-frame--active" : ""}${scanComplete && !scanError ? " scan-frame--complete" : ""}`}>
+              <video ref={videoRef} autoPlay playsInline className="scan-frame__media" />
+              <div className="sunlink-camera-actions">
+                <Button kind="secondary" size="sm" onClick={handleCapturePhoto} disabled={isScanning}>
+                  Capture photo
+                </Button>
+                <Button kind="ghost" size="sm" onClick={stopCamera} disabled={isScanning}>
+                  Stop camera
+                </Button>
+              </div>
+              {isScanning && <div className="scan-line" />}
+              {isScanning && <div className="scan-glow" />}
+            </div>
+          )}
+
+          {cameraError && (
+            <InlineNotification
+              kind="error"
+              lowContrast
+              title="Camera unavailable"
+              subtitle={cameraError}
+              onCloseButtonClick={() => setCameraError(null)}
+              className="sunlink-notification"
+            />
+          )}
+
+          {/* Scanning progress */}
+          {isScanning && (
+            <div className="sunlink-scan-status">
+              <Loading withOverlay={false} description="Analyzing image" small />
+              <span className="sunlink-scan-status__label">{scanStepLabel}</span>
+              <div className="scan-progress-bar">
+                <div className="scan-progress-bar__fill" style={{ width: `${progress}%` }} />
+              </div>
+              <span className="sunlink-scan-status__pct">{progress}%</span>
+            </div>
+          )}
+
+          {scanComplete && scanError && (
+            <InlineNotification
+              kind="error"
+              lowContrast
+              title="Scan failed"
+              subtitle={scanError}
+              onCloseButtonClick={() => setScanError(null)}
+              className="sunlink-notification"
+            />
+          )}
+
+          {/* Action area — Start Scan */}
+          <div className="sunlink-control-center">
+            <Button
+              kind="primary"
+              size="lg"
+              renderIcon={Launch}
+              className="sunlink-start-btn"
+              disabled={isScanning || !uploadedImage}
+              onClick={handleStartScan}
+            >
+              {isScanning ? "Scanning…" : "Start scan"}
+            </Button>
           </div>
-        )}
-
-        {scanComplete && scanError && (
-          <InlineNotification
-            kind="error"
-            lowContrast
-            title="Scan failed"
-            subtitle={scanError}
-            onCloseButtonClick={() => setScanError(null)}
-            style={{ marginTop: "1rem" }}
-          />
-        )}
-
-        <Button
-          kind="primary"
-          style={{ marginTop: "1.5rem" }}
-          disabled={isScanning || !uploadedImage}
-          onClick={handleStartScan}
-        >
-          {isScanning ? "Scanning…" : "Start scan"}
-        </Button>
+        </div>
       </SharedGlassCard>
 
       {/* Health Insight Card — only when result exists */}
@@ -347,6 +384,7 @@ const SunLink: React.FC = () => {
         />
       )}
     </SharedPageLayout>
+    </div>
   );
 };
 

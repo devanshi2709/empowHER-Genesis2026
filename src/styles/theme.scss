@@ -7,15 +7,15 @@
   --glass-radius-lg: 20px;
   --glass-radius-md: 14px;
   --glass-radius-sm: 10px;
-  --glass-backdrop-blur: 22px;
+  --glass-backdrop-blur: 32px;
 
   --page-max-width: 1120px;
   --page-padding-inline: 2.5rem;
   --page-padding-block: 2.75rem;
 
-  --app-gradient: radial-gradient(circle at top left, #ffb347 0, transparent 55%),
-    radial-gradient(circle at top right, #ff6fd8 0, transparent 55%),
-    radial-gradient(circle at bottom, #46c2ff 0, transparent 55%),
+  --app-gradient: radial-gradient(ellipse 120% 80% at 10% 5%, #8A3FFC 0, rgba(138, 63, 252, 0.4) 35%, transparent 55%),
+    radial-gradient(ellipse 100% 70% at 90% 10%, #00d4ff 0, rgba(0, 212, 255, 0.35) 40%, transparent 55%),
+    radial-gradient(ellipse 80% 60% at 50% 95%, #8A3FFC 0, rgba(138, 63, 252, 0.25) 35%, transparent 50%),
     #050910;
 }
 
@@ -42,7 +42,8 @@ body {
     var(--glass-bg);
   border-radius: var(--glass-radius-lg);
   border: 1px solid var(--glass-border);
-  box-shadow: var(--glass-shadow);
+  box-shadow: var(--glass-shadow),
+    inset 0 0 0 1px rgba(255, 255, 255, 0.15);
   backdrop-filter: blur(var(--glass-backdrop-blur));
   -webkit-backdrop-filter: blur(var(--glass-backdrop-blur));
 }
@@ -143,17 +144,53 @@ body {
   flex-direction: column;
   line-height: 1.1;
 
+  span:first-child,
+  span:last-child {
+    color: #ffffff !important; /* EmpowHER + tagline — pure white */
+  }
+
   span:first-child {
     font-size: 0.95rem;
-    font-weight: 600;
-    letter-spacing: 0.12em;
+    font-weight: 700;
+    letter-spacing: 0.05em;
     text-transform: uppercase;
   }
 
   span:last-child {
     font-size: 0.75rem;
-    opacity: 0.7;
+    font-weight: 500;
   }
+}
+
+/* -------------------------------------------------------------------------
+   Header nav containers — transparent so blue pills sit on app background
+   ------------------------------------------------------------------------- */
+
+/* 1. Header nav parent containers (our class + Carbon wrappers) */
+.app-shell-nav,
+.app-shell-nav .cds--header__nav,
+.app-shell-nav .cds--header__menu-bar,
+.app-shell-nav .cds--header__menu-item,
+.app-shell-nav ul,
+.app-shell-nav li,
+.app-shell-nav a,
+.app-shell-nav__link,
+.app-shell-nav__pill-container,
+.cds--header__nav .cds--header__menu-item,
+.cds--tabs__nav,
+.cds--tabs__nav-item,
+.cds--tabs__nav-link {
+  background: transparent !important;
+  background-color: transparent !important;
+  border: none !important;
+}
+
+/* Any div wrapping blue pills in the nav */
+.app-shell-nav div,
+.app-shell-nav__link div {
+  background: transparent !important;
+  background-color: transparent !important;
+  border: none !important;
 }
 
 .app-shell-nav {
@@ -165,47 +202,56 @@ body {
   text-decoration: none;
 }
 
+/* 2. Pill shape + blue styling (keep rounded pill) */
 .app-shell-nav__pill {
-  border-radius: 999px;
+  border-radius: 999px !important;
   padding: 0.4rem 0.9rem;
   font-size: 0.78rem;
   letter-spacing: 0.08em;
   text-transform: uppercase;
-  border: 1px solid transparent;
-  color: rgba(244, 244, 244, 0.8);
-  background: radial-gradient(circle at 0 50%, rgba(255, 255, 255, 0.18), transparent)
-    rgba(12, 19, 32, 0.6);
-  transition:
-    background 160ms ease-out,
-    color 160ms ease-out,
-    border-color 160ms ease-out,
-    box-shadow 160ms ease-out,
-    transform 80ms ease-out;
+  border: none !important;
+  color: #ffffff !important;
+  background: rgba(15, 98, 254, 0.8) !important; /* IBM Blue 0.8 opacity on glass */
 
   &--active {
-    color: #ffffff;
-    border-color: rgba(255, 255, 255, 0.65);
-    box-shadow:
-      0 0 0 1px rgba(255, 255, 255, 0.25),
-      0 8px 24px rgba(0, 0, 0, 0.7);
-    background: radial-gradient(
-        circle at 0 50%,
-        rgba(255, 241, 209, 0.95),
-        transparent 65%
-      )
-      linear-gradient(135deg, #f97316, #ea580c 35%, #4f46e5 100%);
+    color: #ffffff !important;
+    background: #0f62fe !important;
   }
 
   &:hover {
-    transform: translateY(-1px);
-    box-shadow: 0 10px 26px rgba(0, 0, 0, 0.75);
-    border-color: rgba(255, 255, 255, 0.35);
+    color: #ffffff !important;
+    background: #0f62fe !important;
   }
 
   &:focus-visible {
-    outline: 2px solid #f97316;
+    outline: 2px solid #0f62fe;
     outline-offset: 2px;
   }
+}
+
+/* Primary buttons — IBM Blue (high specificity to override Carbon) */
+button.cds--btn.cds--btn--primary,
+.cds--btn.cds--btn--primary,
+.cds--btn--primary {
+  background: #0f62fe !important;
+  background-color: #0f62fe !important;
+  border: none !important;
+  color: #ffffff !important;
+}
+
+button.cds--btn.cds--btn--primary:hover:not(:disabled),
+.cds--btn.cds--btn--primary:hover:not(:disabled),
+.cds--btn--primary:hover:not(:disabled) {
+  background: #3b82ff !important;
+  background-color: #3b82ff !important;
+  color: #ffffff !important;
+}
+
+/* Secondary buttons — ghost with IBM Blue border */
+.cds--btn--secondary {
+  background: transparent !important;
+  border: 2px solid #0f62fe !important;
+  color: #0f62fe !important;
 }
 
 .app-shell-main {

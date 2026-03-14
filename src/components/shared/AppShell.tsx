@@ -20,12 +20,12 @@ export const AppShell = ({ children }: AppShellProps) => {
 
   return (
     <>
-      <Header aria-label="HelioMind health and wellness shell" className="app-shell-header">
+      <Header aria-label="EmpowHER health and wellness shell" className="app-shell-header">
         <HeaderName prefix="" onClick={() => navigate('/')} style={{ cursor: 'pointer' }}>
           <div className="app-shell-header__brand">
             <span className="app-shell-header__brand-mark" />
             <div className="app-shell-header__brand-text">
-              <span>HelioMind</span>
+              <span>EmpowHER</span>
               <span>Health &amp; Energy Insight</span>
             </div>
           </div>
@@ -92,7 +92,7 @@ export const AppShell = ({ children }: AppShellProps) => {
       </main>
 
       <footer className="app-shell-footer">
-        <span className="app-shell-footer__meta">HelioMind • Health &amp; Wellness Platform Shell</span>
+        <span className="app-shell-footer__meta">EmpowHER • Health &amp; Wellness Platform Shell</span>
         <span className="app-shell-footer__team">Person 1: Frontend Architecture &amp; Integration</span>
       </footer>
     </>

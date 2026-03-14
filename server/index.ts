@@ -12,9 +12,9 @@ app.use(express.json());
 app.use('/api', scanRouter);
 
 app.get('/api/health', (_req, res) => {
-  res.json({ status: 'ok', service: 'heliomind-api' });
+  res.json({ status: 'ok', service: 'empowher-api' });
 });
 
 app.listen(PORT, () => {
-  console.log(`HelioMind API listening on http://localhost:${PORT}`);
+  console.log(`EmpowHER API listening on http://localhost:${PORT}`);
 });
