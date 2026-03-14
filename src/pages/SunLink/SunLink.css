@@ -119,10 +119,12 @@
 }
 
 .scan-status__text {
-  font-size: 0.95rem;
   color: #63d2ff;
   font-weight: 500;
+  font-size: 0.95rem;
   letter-spacing: 0.04em;
+  min-width: 220px;
+  transition: opacity 0.3s ease;
 }
 
 .scan-status__pct {
@@ -157,6 +159,79 @@
   color: #42ffa1;
   font-size: 0.95rem;
   font-weight: 500;
+}
+
+.scan-result__title {
+  font-weight: 600;
+  margin: 0 0 0.4rem;
+  color: #42ffa1;
+}
+
+.scan-result__body {
+  margin: 0;
+  font-weight: 400;
+  color: rgba(244, 244, 244, 0.85);
+  font-size: 0.9rem;
+  line-height: 1.55;
+}
+
+/* Health Insight Card */
+.insight-card {
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+}
+
+.insight-card__header {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+}
+
+.insight-card__label {
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: rgba(244, 244, 244, 0.5);
+}
+
+.insight-card__badge {
+  font-size: 0.75rem;
+  font-weight: 600;
+  padding: 0.15rem 0.6rem;
+  border-radius: 999px;
+  border: 1px solid;
+  letter-spacing: 0.05em;
+}
+
+.insight-card__issue {
+  font-size: 1.15rem;
+  font-weight: 700;
+  margin: 0;
+  color: #f4f4f4;
+}
+
+.insight-card__insight {
+  font-size: 0.9rem;
+  line-height: 1.6;
+  color: rgba(244, 244, 244, 0.8);
+  margin: 0;
+}
+
+.insight-card__meta {
+  display: flex;
+  gap: 1.25rem;
+  font-size: 0.78rem;
+  color: rgba(244, 244, 244, 0.45);
+  flex-wrap: wrap;
+}
+
+.insight-card__meta code {
+  font-family: monospace;
+  font-size: 0.75rem;
+  opacity: 0.7;
 }
 
 @media (max-width: 640px) {
