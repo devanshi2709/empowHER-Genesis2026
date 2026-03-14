@@ -4,11 +4,14 @@ import { BrowserRouter } from 'react-router-dom'
 import '@carbon/styles/css/styles.css'
 import '@/styles/theme.scss'
 import App from './App.tsx'
+import { AppProvider } from './context/AppContext'
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
     <BrowserRouter>
-      <App />
+      <AppProvider>
+        <App />
+      </AppProvider>
     </BrowserRouter>
   </StrictMode>,
 )

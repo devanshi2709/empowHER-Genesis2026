@@ -1,22 +1,14 @@
-import { Route, Routes } from 'react-router-dom'
-import { AppShell } from '@/components/shared/AppShell'
-import { DashboardPage } from '@/pages/Dashboard'
-import { SunLinkPage } from '@/pages/SunLink'
-import { AdvocacyPage } from '@/pages/Advocacy'
-import { AppProvider } from '@/context/AppContext'
+import React from "react";
+import { Routes, Route } from "react-router-dom";
+import SunLink from "./pages/SunLink";
 
-function App() {
+const App: React.FC = () => {
   return (
-    <AppProvider>
-      <AppShell>
-        <Routes>
-          <Route path="/" element={<DashboardPage />} />
-          <Route path="/scan" element={<SunLinkPage />} />
-          <Route path="/result" element={<AdvocacyPage />} />
-        </Routes>
-      </AppShell>
-    </AppProvider>
-  )
-}
+    <Routes>
+      <Route path="/sunlink" element={<SunLink />} />
+      <Route path="/" element={<SunLink />} />
+    </Routes>
+  );
+};
 
-export default App
+export default App;
