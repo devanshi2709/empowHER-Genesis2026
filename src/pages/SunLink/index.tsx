@@ -7,47 +7,46 @@ import { useAppContext } from "../../context/AppContext";
 import type { ScanResult } from "../../context/AppContext";
 import "./SunLink.css";
 
-// ─── Mock AI data ──────────────────────────────────────────────────────────────
-const SCAN_DURATION_MS = 3000;
-
 const SCAN_STEPS = [
-  { at: 0,  label: "Analyzing scan…" },
-  { at: 33, label: "Scanning tissue patterns…" },
-  { at: 66, label: "Generating insight…" },
+  { at: 0,  label: "Uploading image…" },
+  { at: 25, label: "Analyzing scan…" },
+  { at: 60, label: "Generating insight…" },
 ];
 
-const MOCK_RESULTS: Omit<ScanResult, "scanId" | "imageUrl">[] = [
-  {
-    detectedIssue: "gum_inflammation",
-    confidence: "moderate",
-    scanType: "oral",
-    insight: "Possible mild inflammation detected around the gum line. Staying hydrated and gentle brushing may help. Consider a dental follow-up.",
-  },
-  {
-    detectedIssue: "healthy_tissue",
-    confidence: "high",
-    scanType: "oral",
-    insight: "No significant anomalies detected. Tissue patterns appear healthy. Keep up your current oral hygiene routine.",
-  },
-  {
-    detectedIssue: "pigmentation_irregularity",
-    confidence: "low",
-    scanType: "skin",
-    insight: "Early-stage pigmentation irregularity observed. Results are inconclusive — consider a follow-up scan in better lighting.",
-  },
-  {
-    detectedIssue: "elevated_vascular_activity",
-    confidence: "moderate",
-    scanType: "general",
-    insight: "Elevated vascular activity detected in the scan area. Recommend a clinical review for accurate diagnosis.",
-  },
-];
+/** Call backend POST /api/scan with image file; returns ScanResult (COS + watsonx). */
+async function runAIScan(imageDataUrl: string): Promise<ScanResult> {
+  const res = await fetch(imageDataUrl);
+  const blob = await res.blob();
+  const formData = new FormData();
+  const ext = blob.type?.split("/")[1] || "png";
+  formData.append("image", blob, `scan.${ext}`);
 
-/** TODO: Replace with IBM watsonx.ai call when credentials are available. */
-async function runAIScan(imageUrl: string): Promise<ScanResult> {
-  await new Promise((r) => setTimeout(r, SCAN_DURATION_MS));
-  const mock = MOCK_RESULTS[Math.floor(Math.random() * MOCK_RESULTS.length)];
-  return { ...mock, scanId: `scan_${Date.now()}`, imageUrl };
+  const apiRes = await fetch("/api/scan", {
+    method: "POST",
+    body: formData,
+  });
+
+  if (!apiRes.ok) {
+    const text = await apiRes.text().catch(() => "");
+    let message = apiRes.statusText;
+    try {
+      const maybeJson = JSON.parse(text) as { error?: string };
+      if (maybeJson.error) {
+        message = maybeJson.error;
+      }
+    } catch {
+      if (text) {
+        message = `${apiRes.status} ${apiRes.statusText} – ${text}`;
+      }
+    }
+    throw new Error(message || "Scan failed");
+  }
+
+  const data = (await apiRes.json()) as ScanResult;
+  if (!data.scanId || !data.insight || !data.imageUrl) {
+    throw new Error("Invalid scan response");
+  }
+  return data;
 }
 
 // ─── Health Insight Card ───────────────────────────────────────────────────────
@@ -189,16 +188,15 @@ const SunLink: React.FC = () => {
     setScanStepLabel(SCAN_STEPS[0].label);
     console.log("Scan started");
 
-    const intervalMs = 50;
-    const steps = SCAN_DURATION_MS / intervalMs;
-    let current = 0;
+    const intervalMs = 80;
+    const maxPct = 95;
+    let elapsed = 0;
     scanTimerRef.current = setInterval(() => {
-      current += 1;
-      const pct = Math.min(Math.round((current / steps) * 100), 100);
+      elapsed += intervalMs;
+      const pct = Math.min(Math.round((elapsed / 4000) * maxPct), maxPct);
       setProgress(pct);
       const active = [...SCAN_STEPS].reverse().find((s) => pct >= s.at);
       if (active) setScanStepLabel(active.label);
-      if (current === 1) console.log("Animation running");
     }, intervalMs);
 
     try {
@@ -208,8 +206,9 @@ const SunLink: React.FC = () => {
       setResult(aiResult);
       console.log("Scan complete", aiResult.scanId);
     } catch (err) {
-      console.error("Scan error:", err);
-      setScanError("Scan failed. Please try again.");
+      console.error("Scan API Error:", err);
+      const message = err instanceof Error ? err.message : "Scan failed. Please try again.";
+      setScanError(message);
     } finally {
       if (scanTimerRef.current) { clearInterval(scanTimerRef.current); scanTimerRef.current = null; }
       setScanning(false);
@@ -231,7 +230,14 @@ const SunLink: React.FC = () => {
         {/* Upload area */}
         <div className={`upload-area${scanning ? " upload-area--disabled" : ""}`}>
           <span className="upload-area__text">Upload or capture an image to begin</span>
-          <input type="file" accept="image/*" ref={fileInputRef} onChange={handleFileChange} disabled={scanning} style={{ marginTop: "0.75rem" }} />
+          <input
+            type="file"
+            accept="image/jpeg, image/png, image/webp"
+            ref={fileInputRef}
+            onChange={handleFileChange}
+            disabled={scanning}
+            style={{ marginTop: "0.75rem" }}
+          />
           {!isCameraActive && (
             <button onClick={handleStartCamera} disabled={scanning} style={{ marginTop: "0.5rem" }}>
               Start Camera
@@ -274,7 +280,7 @@ const SunLink: React.FC = () => {
           <p style={{ color: "#ff8389", marginTop: "1rem" }}>⚠️ {scanError}</p>
         )}
 
-        <Button kind="primary" style={{ marginTop: "1.5rem" }} disabled={scanning || !hasPreview} onClick={handleStartScan}>
+        <Button kind="primary" style={{ marginTop: "1.5rem" }} disabled={scanning || !uploadedImage} onClick={handleStartScan}>
           {scanning ? "Scanning…" : "Start Scan"}
         </Button>
       </SharedGlassCard>
