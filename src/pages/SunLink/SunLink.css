@@ -1,0 +1,38 @@
+.scan-container {
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  padding: 2rem;
+  min-height: 100vh;
+}
+
+.scan-title {
+  font-size: 2rem;
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+}
+
+.scan-description {
+  font-size: 1rem;
+  margin-bottom: 1.5rem;
+  color: #525252;
+}
+
+.upload-area {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  min-height: 220px;
+  border: 2px dashed #8d8d8d;
+  border-radius: 4px;
+  margin-bottom: 1.5rem;
+  background-color: #f4f4f4;
+}
+
+.upload-area__text {
+  font-size: 1rem;
+  color: #6f6f6f;
+  text-align: center;
+  padding: 1rem;
+}
