@@ -16,7 +16,7 @@ export const useAppContext = () => {
 };
 
 export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  const [lastScanSessionId, setLastScanSessionId] = useState('');
+  const [, setLastScanSessionId] = useState('');
 
   // other state and logic
 
