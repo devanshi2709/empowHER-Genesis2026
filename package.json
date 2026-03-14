@@ -12,6 +12,8 @@
     "dev:all": "concurrently \"npm run server\" \"npm run dev\""
   },
   "dependencies": {
+    "@carbon/charts": "^1.27.3",
+    "@carbon/charts-react": "^1.27.3",
     "@carbon/react": "^1.103.0",
     "@carbon/styles": "^1.102.0",
     "axios": "^1.7.0",
