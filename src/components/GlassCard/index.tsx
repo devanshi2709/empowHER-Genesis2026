@@ -6,7 +6,7 @@ interface GlassCardProps {
 }
 
 const GlassCard: React.FC<GlassCardProps> = ({ children, className = "" }) => {
-  return <div className={`glass-card ${className}`.trim()}>{children}</div>;
+  return <div className={`glass-surface ${className}`.trim()}>{children}</div>;
 };
 
 export default GlassCard;
