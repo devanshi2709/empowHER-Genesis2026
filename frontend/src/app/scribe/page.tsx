@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { useState } from "react";
-import { InlineNotification, TextArea, Tile } from "@carbon/react";
+import { InlineNotification, TextArea } from "@carbon/react";
 import { Document, Notebook, WatsonHealth3DMprToggle } from "@carbon/icons-react";
 import { PageLayout } from "@/components/layout/page-layout";
 import { SectionCard } from "@/components/layout/section-card";
@@ -99,7 +99,7 @@ export default function VisitScribe() {
         </>
       }
     >
-      <Tile className="empowher-surface p-5 md:p-6">
+      <div className="empowher-surface p-5 md:p-6">
         <InlineNotification
           kind="info"
           lowContrast
@@ -108,7 +108,7 @@ export default function VisitScribe() {
           subtitle="The transcript is sent to backend workflow endpoint, then saved for Care Plan and downstream pages."
           className="!max-w-none"
         />
-      </Tile>
+      </div>
 
       {viewState === "loading" ? (
         <LoadingState

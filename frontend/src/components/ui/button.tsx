@@ -1,7 +1,6 @@
 "use client";
 
-import type { ComponentProps } from "react";
-import { Button as CarbonButton } from "@carbon/react";
+import type { ElementType, ReactNode, MouseEventHandler } from "react";
 import { cn } from "@/lib/utils";
 
 type AppButtonVariant =
@@ -22,63 +21,79 @@ type AppButtonSize =
   | "icon-sm"
   | "icon-lg";
 
-const variantToKind: Record<AppButtonVariant, ComponentProps<typeof CarbonButton>["kind"]> = {
-  default: "primary",
-  outline: "tertiary",
-  secondary: "secondary",
-  ghost: "ghost",
-  destructive: "danger",
-  link: "ghost",
+const variantStyles: Record<AppButtonVariant, string> = {
+  default:
+    "bg-[#1e40af] text-white border border-[#1e40af] hover:bg-[#1e3a8a] hover:border-[#1e3a8a] hover:shadow-[0_2px_8px_rgba(30,64,175,0.28)] focus:ring-2 focus:ring-[#3b82f6]/40 focus:ring-offset-2",
+  outline:
+    "bg-transparent text-[#1e40af] border border-[#1e40af] hover:bg-[#eff6ff] hover:text-[#1e3a8a] hover:border-[#1e3a8a] focus:ring-2 focus:ring-[#3b82f6]/40 focus:ring-offset-2",
+  secondary:
+    "bg-[#eff6ff] text-[#1e40af] border border-[#bfdbfe] hover:bg-[#dbeafe] hover:border-[#93c5fd] focus:ring-2 focus:ring-[#3b82f6]/40 focus:ring-offset-2",
+  ghost:
+    "bg-transparent text-[#1e40af] border border-transparent hover:bg-[#eff6ff] focus:ring-2 focus:ring-[#3b82f6]/40 focus:ring-offset-2",
+  destructive:
+    "bg-[#dc2626] text-white border border-[#dc2626] hover:bg-[#b91c1c] hover:border-[#b91c1c] focus:ring-2 focus:ring-[#f87171]/40 focus:ring-offset-2",
+  link:
+    "bg-transparent text-[#1e40af] border-none underline underline-offset-4 hover:text-[#1e3a8a] focus:outline-none",
 };
 
-const sizeToCarbon: Record<AppButtonSize, ComponentProps<typeof CarbonButton>["size"]> = {
-  default: "md",
-  xs: "sm",
-  sm: "sm",
-  lg: "lg",
-  icon: "sm",
-  "icon-xs": "sm",
-  "icon-sm": "sm",
-  "icon-lg": "lg",
+const sizeStyles: Record<AppButtonSize, string> = {
+  default:  "h-9 px-4 text-sm",
+  xs:       "h-7 px-2.5 text-xs",
+  sm:       "h-8 px-3 text-sm",
+  lg:       "h-10 px-5 text-sm",
+  icon:     "h-9 w-9 p-0",
+  "icon-xs": "h-7 w-7 p-0",
+  "icon-sm": "h-8 w-8 p-0",
+  "icon-lg": "h-10 w-10 p-0",
 };
 
-type ButtonProps = Omit<ComponentProps<typeof CarbonButton>, "kind" | "size"> & {
+type ButtonProps<T extends ElementType = "button"> = {
+  as?: T;
   variant?: AppButtonVariant;
   size?: AppButtonSize;
+  children?: ReactNode;
+  className?: string;
+  disabled?: boolean;
+  onClick?: MouseEventHandler;
+  href?: string;
+  "aria-label"?: string;
+  type?: "button" | "submit" | "reset";
 };
 
-function Button({
+function Button<T extends ElementType = "button">({
+  as,
   className,
   variant = "default",
   size = "default",
   children,
+  disabled,
   ...props
-}: ButtonProps) {
-  const isIconOnly = size.startsWith("icon");
+}: ButtonProps<T> & Record<string, unknown>) {
+  const Component = (as ?? "button") as ElementType;
   return (
-    <CarbonButton
-      kind={variantToKind[variant]}
-      size={sizeToCarbon[size]}
-      hasIconOnly={isIconOnly}
-      iconDescription={isIconOnly ? (typeof children === "string" ? children : "action") : undefined}
+    <Component
       className={cn(
-        "transition-colors duration-150",
-        variant === "link" && "!h-auto !min-h-0 !px-0 !py-0 underline",
+        "inline-flex items-center justify-center gap-1.5 rounded-[6px] font-medium",
+        "transition-all duration-150 focus:outline-none",
+        "disabled:pointer-events-none disabled:opacity-50",
+        variantStyles[variant],
+        sizeStyles[size],
+        variant !== "link" && size !== "icon" && size !== "icon-xs" && size !== "icon-sm" && size !== "icon-lg"
+          ? "leading-none"
+          : "",
         className,
       )}
+      disabled={disabled}
       {...props}
     >
       {children}
-    </CarbonButton>
+    </Component>
   );
 }
 
-function buttonVariants({
-  className,
-}: {
-  className?: string;
-}) {
+function buttonVariants({ className }: { className?: string }) {
   return cn(className);
 }
 
 export { Button, buttonVariants };
+

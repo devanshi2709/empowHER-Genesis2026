@@ -1,5 +1,4 @@
 import type { ReactNode } from "react";
-import { Tile } from "@carbon/react";
 import { cn } from "@/lib/utils";
 
 type SectionCardProps = {
@@ -20,15 +19,19 @@ export function SectionCard({
   contentClassName,
 }: SectionCardProps) {
   return (
-    <Tile className={cn("empowher-section-card p-5 md:p-6", className)}>
+    <div className={cn("empowher-section-card p-5 md:p-6", className)}>
       <div className="flex flex-wrap items-start justify-between gap-3">
         <div>
-          <h3 className="text-lg font-semibold tracking-tight text-[#161616]">{title}</h3>
-          {description ? <p className="empowher-quiet-copy mt-1 text-sm">{description}</p> : null}
+          <h3 className="text-base font-semibold tracking-tight text-[#0f172a]">{title}</h3>
+          {description ? (
+            <p className="empowher-quiet-copy mt-1 text-sm">{description}</p>
+          ) : null}
         </div>
-        {actions ? <div className="flex flex-wrap items-center gap-2">{actions}</div> : null}
+        {actions ? (
+          <div className="flex flex-wrap items-center gap-2">{actions}</div>
+        ) : null}
       </div>
       <div className={cn("mt-4", contentClassName)}>{children}</div>
-    </Tile>
+    </div>
   );
 }

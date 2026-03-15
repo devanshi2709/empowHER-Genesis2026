@@ -2,7 +2,6 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { HeaderMenuItem, HeaderNavigation } from "@carbon/react";
 
 const navItems = [
   { href: "/", label: "Dashboard" },
@@ -16,21 +15,20 @@ export function TopNav() {
   const pathname = usePathname();
 
   return (
-    <HeaderNavigation aria-label="Main navigation" className="max-w-full overflow-x-auto">
+    <nav className="eh-nav" aria-label="Main navigation">
       {navItems.map((item) => {
         const isActive = pathname === item.href;
         return (
-          <HeaderMenuItem
+          <Link
             key={item.href}
-            as={Link}
             href={item.href}
-            isCurrentPage={isActive}
+            className={`eh-nav-item${isActive ? " eh-nav-item--active" : ""}`}
             aria-current={isActive ? "page" : undefined}
           >
             {item.label}
-          </HeaderMenuItem>
+          </Link>
         );
       })}
-    </HeaderNavigation>
+    </nav>
   );
 }
