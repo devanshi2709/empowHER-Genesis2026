@@ -34,7 +34,8 @@
 
 ### 🎯 **The Elevator Pitch**
 **What if every doctor’s recommendation automatically turned into completed care?**
-## In gynecology, the hardest part of treatment often isn’t the diagnosis-it’s the follow-through. Patients leave appointments with unclear instructions, referrals get delayed, and administrative bottlenecks slow down care.
+
+In gynecology, the hardest part of treatment often isn’t the diagnosis-it’s the follow-through. Patients leave appointments with unclear instructions, referrals get delayed, and administrative bottlenecks slow down care.
 empowHER solves this problem.
 Our AI-powered workflow engine listens to clinical conversations, extracts key action items, and automatically generates patient-ready care plans, symptom tracking tools, and complete referral packets. By converting unstructured visits into structured workflows, empowHER ensures that clinical decisions don’t stop at the chart-they move patients forward.
 
