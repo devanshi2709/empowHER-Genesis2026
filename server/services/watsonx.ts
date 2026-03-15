@@ -76,13 +76,34 @@ export async function generateInsight(prompt: string): Promise<{ insight: string
 
 /**
  * generateExplanation(data)
- * Takes a scan result object and returns a plain-language explanation.
- * Used by /api/explain to translate clinical data for patients.
+ * Takes a scan result + symptoms and returns a structured advocacy response:
+ * explanation, next_step, and mock benefit info.
+ * Used by /api/explain — all outputs are for demo/workflow simulation only.
  */
-export async function generateExplanation(data: Record<string, unknown>): Promise<{ explanation: string }> {
+export async function generateExplanation(data: Record<string, unknown>): Promise<{
+  explanation: string;
+  next_step: string;
+  benefit: string;
+}> {
   const system =
-    "You are a compassionate medical assistant. Explain scan results in simple, reassuring language a patient can understand.";
-  const userMessage = `Scan data: ${JSON.stringify(data)}`;
+    "You are a compassionate health advocacy assistant helping users understand their wellness app results. " +
+    "All outputs are for demo and workflow simulation only — not real medical diagnosis. " +
+    "Respond ONLY with a JSON object with three fields: " +
+    "\"explanation\" (plain-language summary), " +
+    "\"next_step\" (one suggested action for the user), " +
+    "\"benefit\" (one mock insurance/benefit tip relevant to the condition).";
+  const userMessage = `Health insight data: ${JSON.stringify(data)}`;
   const text = await callWatsonX(system, userMessage);
-  return { explanation: text };
+
+  // Try to parse structured JSON; fall back to safe defaults if AI returns plain text
+  try {
+    const cleaned = text.replace(/```json|```/g, "").trim();
+    return JSON.parse(cleaned);
+  } catch {
+    return {
+      explanation: text,
+      next_step: "Consult a healthcare professional for further guidance.",
+      benefit: "Check your plan for relevant wellness benefits.",
+    };
+  }
 }
