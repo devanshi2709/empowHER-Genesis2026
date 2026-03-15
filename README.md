@@ -33,14 +33,11 @@
 ---
 
 ### 🎯 **The Elevator Pitch**
+**What if every doctor’s recommendation automatically turned into completed care?**
+In gynecology, the hardest part of treatment often isn’t the diagnosis—it’s the follow-through. Patients leave appointments with unclear instructions, referrals get delayed, and administrative bottlenecks slow down care.
+empowHER solves this problem.
+Our AI-powered workflow engine listens to clinical conversations, extracts key action items, and automatically generates patient-ready care plans, symptom tracking tools, and complete referral packets. By converting unstructured visits into structured workflows, empowHER ensures that clinical decisions don’t stop at the chart—they move patients forward.
 
-**Healthcare is broken.** Doctors spend **2 hours on paperwork** for every **1 hour with patients**.  
-**50% of referrals** vanish. **78% of patients** leave confused. **40%** don't follow their care plans.
-
-**EmpowHER fixes this.** AI that transcribes visits, generates plain-language care plans,  
-tracks symptoms longitudinally, and automates referral coordination — **all in real-time.**
-
-**The result?** Clinicians reclaim their time. Patients actually understand. Referrals complete. Care flows.
 
 </div>
 
