@@ -1,42 +1,63 @@
 /**
  * WatsonX Service Wrapper
  * ─────────────────────────────────────────────────────────────
- * Centralises all IBM watsonx.ai API calls so routes (and
- * Person 3's AI features) only need to import from this file.
+ * Centralises all IBM watsonx.ai API calls so routes only need
+ * to import from this file.
  *
  * Uses the /ml/v1/text/chat endpoint with the model configured
- * in the environment. All functions return structured JSON so
- * callers never touch raw HTTP responses.
+ * in the environment. Errors are surfaced upstream; this module
+ * does not fabricate fallback clinical output.
  */
 
 import axios from "axios";
 
-const WATSONX_URL = process.env.WATSONX_URL!;
-const WATSONX_API_KEY = process.env.WATSONX_API_KEY!;
-const WATSONX_PROJECT_ID = process.env.WATSONX_PROJECT_ID!;
-const MODEL_ID = "ibm/granite-13b-chat-v2";
+type WatsonConfig = {
+  url: string;
+  apiKey: string;
+  projectId: string;
+  modelId: string;
+};
+
+function readRequiredEnv(name: string): string {
+  const raw = process.env[name];
+  if (!raw || !raw.trim()) {
+    throw new Error(`Missing required environment variable: ${name}`);
+  }
+  return raw.trim();
+}
+
+function getWatsonConfig(): WatsonConfig {
+  return {
+    url: readRequiredEnv("WATSONX_URL"),
+    apiKey: readRequiredEnv("WATSONX_API_KEY"),
+    projectId: readRequiredEnv("WATSONX_PROJECT_ID"),
+    modelId: process.env.WATSONX_MODEL_ID?.trim() || "ibm/granite-4-h-small",
+  };
+}
 
 /** Fetch a Bearer token from IBM IAM (cached per process start). */
 let _cachedToken: string | null = null;
-async function getIAMToken(): Promise<string> {
-  if (_cachedToken) return _cachedToken;
+let _cachedTokenApiKey: string | null = null;
+async function getIAMToken(apiKey: string): Promise<string> {
+  if (_cachedToken && _cachedTokenApiKey === apiKey) return _cachedToken;
   const resp = await axios.post(
     "https://iam.cloud.ibm.com/identity/token",
     new URLSearchParams({
       grant_type: "urn:ibm:params:oauth:grant-type:apikey",
-      apikey: WATSONX_API_KEY,
+      apikey: apiKey,
     }),
     { headers: { "Content-Type": "application/x-www-form-urlencoded" } }
   );
   _cachedToken = resp.data.access_token as string;
+  _cachedTokenApiKey = apiKey;
   return _cachedToken;
 }
 
 /** Build a minimal chat payload for the watsonx.ai endpoint. */
-function buildPayload(systemPrompt: string, userMessage: string) {
+function buildPayload(systemPrompt: string, userMessage: string, config: WatsonConfig) {
   return {
-    model_id: MODEL_ID,
-    project_id: WATSONX_PROJECT_ID,
+    model_id: config.modelId,
+    project_id: config.projectId,
     messages: [
       { role: "system", content: systemPrompt },
       { role: "user", content: userMessage },
@@ -47,16 +68,33 @@ function buildPayload(systemPrompt: string, userMessage: string) {
 
 /** Call watsonx and return the assistant's reply text. */
 async function callWatsonX(systemPrompt: string, userMessage: string): Promise<string> {
-  const token = await getIAMToken();
-  const resp = await axios.post(WATSONX_URL, buildPayload(systemPrompt, userMessage), {
-    headers: {
-      Authorization: `Bearer ${token}`,
-      "Content-Type": "application/json",
-    },
-  });
-  // Extract the assistant message from the response
-  const choices = resp.data?.choices ?? resp.data?.results ?? [];
-  return choices[0]?.message?.content ?? choices[0]?.generated_text ?? "";
+  const config = getWatsonConfig();
+  try {
+    const token = await getIAMToken(config.apiKey);
+    const resp = await axios.post(config.url, buildPayload(systemPrompt, userMessage, config), {
+      headers: {
+        Authorization: `Bearer ${token}`,
+        "Content-Type": "application/json",
+      },
+      timeout: 30000,
+    });
+    // Extract the assistant message from the response
+    const choices = resp.data?.choices ?? resp.data?.results ?? [];
+    const text = choices[0]?.message?.content ?? choices[0]?.generated_text ?? "";
+    if (!text || !text.trim()) {
+      throw new Error("WatsonX returned an empty response.");
+    }
+    return text;
+  } catch (err: unknown) {
+    const upstreamDetails = axios.isAxiosError(err)
+      ? JSON.stringify(err.response?.data ?? { message: err.message })
+      : err instanceof Error
+        ? err.message
+        : "Unknown WatsonX error";
+
+    console.error("[watsonx] Upstream request failed:", upstreamDetails);
+    throw new Error(`WatsonX unavailable: ${upstreamDetails}`);
+  }
 }
 
 // ─────────────────────────────────────────────────────────────
@@ -76,9 +114,8 @@ export async function generateInsight(prompt: string): Promise<{ insight: string
 
 /**
  * generateExplanation(data)
- * Takes a scan result + symptoms and returns a structured advocacy response:
- * explanation, next_step, and mock benefit info.
- * Used by /api/explain — all outputs are for demo/workflow simulation only.
+ * Takes care-context data and returns a structured advocacy response:
+ * explanation, next_step, and benefit guidance.
  */
 export async function generateExplanation(data: Record<string, unknown>): Promise<{
   explanation: string;
@@ -86,24 +123,39 @@ export async function generateExplanation(data: Record<string, unknown>): Promis
   benefit: string;
 }> {
   const system =
-    "You are a compassionate health advocacy assistant helping users understand their wellness app results. " +
-    "All outputs are for demo and workflow simulation only — not real medical diagnosis. " +
+    "You are a compassionate healthcare workflow assistant helping clinicians draft patient-friendly guidance. " +
     "Respond ONLY with a JSON object with three fields: " +
     "\"explanation\" (plain-language summary), " +
     "\"next_step\" (one suggested action for the user), " +
-    "\"benefit\" (one mock insurance/benefit tip relevant to the condition).";
+    "\"benefit\" (one relevant insurance or benefits coordination tip).";
   const userMessage = `Health insight data: ${JSON.stringify(data)}`;
   const text = await callWatsonX(system, userMessage);
 
-  // Try to parse structured JSON; fall back to safe defaults if AI returns plain text
+  // Require strict JSON so callers can trust the contract.
   try {
     const cleaned = text.replace(/```json|```/g, "").trim();
-    return JSON.parse(cleaned);
-  } catch {
+    const parsed = JSON.parse(cleaned) as Partial<{
+      explanation: string;
+      next_step: string;
+      benefit: string;
+    }>;
+
+    if (
+      !parsed ||
+      typeof parsed.explanation !== "string" ||
+      typeof parsed.next_step !== "string" ||
+      typeof parsed.benefit !== "string"
+    ) {
+      throw new Error("WatsonX explanation payload missing required string fields.");
+    }
+
     return {
-      explanation: text,
-      next_step: "Consult a healthcare professional for further guidance.",
-      benefit: "Check your plan for relevant wellness benefits.",
+      explanation: parsed.explanation,
+      next_step: parsed.next_step,
+      benefit: parsed.benefit,
     };
+  } catch (err) {
+    const message = err instanceof Error ? err.message : "Unknown explanation parse error";
+    throw new Error(`Failed to parse WatsonX explanation JSON: ${message}`);
   }
 }

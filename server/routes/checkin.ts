@@ -1,8 +1,33 @@
 import { Router, Request, Response } from "express";
-// WatsonX service — generateInsight() is reused here to parse the voice transcript
 import { generateInsight } from "../services/watsonx.js";
 
 const router = Router();
+
+type EnergyLevel = "low" | "medium" | "high";
+
+type CheckinExtraction = {
+  energy_level: EnergyLevel;
+  symptom_tags: string[];
+};
+
+function normaliseAiExtraction(insight: string): CheckinExtraction | null {
+  try {
+    const cleaned = insight.replace(/```json|```/g, "").trim();
+    const parsed = JSON.parse(cleaned) as Partial<CheckinExtraction>;
+    const energy_level =
+      parsed.energy_level && ["low", "medium", "high"].includes(parsed.energy_level)
+        ? (parsed.energy_level as EnergyLevel)
+        : null;
+    const symptom_tags = Array.isArray(parsed.symptom_tags)
+      ? parsed.symptom_tags.filter((tag): tag is string => typeof tag === "string").slice(0, 5)
+      : [];
+
+    if (!energy_level) return null;
+    return { energy_level, symptom_tags };
+  } catch {
+    return null;
+  }
+}
 
 router.get("/", (_req: Request, res: Response) => {
   res.json({ success: true, message: "Endpoint initialized" });
@@ -10,8 +35,7 @@ router.get("/", (_req: Request, res: Response) => {
 
 // POST /api/checkin (Phase 5 — Daily Pulse Dashboard / Voice Check-In)
 // Accepts: { transcript } — raw text from user's voice input
-// Returns: energy_level + symptom_tags for the Daily Pulse Dashboard
-// All outputs are for demo/workflow simulation only, not medical diagnosis.
+// Returns: energy_level + symptom_tags extracted by WatsonX.
 router.post("/", async (req: Request, res: Response) => {
   const { transcript } = req.body as { transcript?: string };
 
@@ -32,25 +56,19 @@ router.post("/", async (req: Request, res: Response) => {
 
   try {
     const { insight } = await generateInsight(prompt);
-
-    // Parse structured JSON from WatsonX response
-    let energy_level: string;
-    let symptom_tags: string[];
-
-    try {
-      const cleaned = insight.replace(/```json|```/g, "").trim();
-      const parsed = JSON.parse(cleaned);
-      energy_level = ["low", "medium", "high"].includes(parsed.energy_level)
-        ? parsed.energy_level
-        : "medium";
-      symptom_tags = Array.isArray(parsed.symptom_tags) ? parsed.symptom_tags : [];
-    } catch {
-      // Fallback if AI doesn't return valid JSON
-      energy_level = "medium";
-      symptom_tags = [];
+    const aiExtraction = normaliseAiExtraction(insight);
+    if (!aiExtraction) {
+      return res.status(502).json({
+        success: false,
+        message: "WatsonX returned an invalid extraction payload for /api/checkin.",
+      });
     }
 
-    return res.json({ success: true, energy_level, symptom_tags });
+    console.log(
+      `[/api/checkin] Extraction source=watsonx energy=${aiExtraction.energy_level} tags=${aiExtraction.symptom_tags.join(",") || "none"}`
+    );
+
+    return res.json({ success: true, ...aiExtraction, extraction_source: "watsonx" });
   } catch (err: unknown) {
     const message = err instanceof Error ? err.message : "WatsonX call failed";
     console.error("[/api/checkin] Error:", message);

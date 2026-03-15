@@ -1,20 +1,10 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
+import { AppShell } from "@/components/shell/app-shell";
 import "./globals.css";
 
-const geistSans = Geist({
-  variable: "--font-geist-sans",
-  subsets: ["latin"],
-});
-
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
-  subsets: ["latin"],
-});
-
 export const metadata: Metadata = {
-  title: "GynoFlow Copilot",
-  description: "Clinical workflow and care plan generator for gynecology.",
+  title: "EmpowHER Clinic Copilot",
+  description: "Clinic-facing workflow workspace for visit documentation and care planning.",
 };
 
 export default function RootLayout({
@@ -24,10 +14,8 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
-      >
-        {children}
+      <body className="antialiased">
+        <AppShell>{children}</AppShell>
       </body>
     </html>
   );
