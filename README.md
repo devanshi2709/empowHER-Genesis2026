@@ -9,7 +9,7 @@
 ╚══════╝╚═╝     ╚═╝╚═╝      ╚═════╝  ╚══╝╚══╝ ╚═╝  ╚═╝╚══════╝╚═╝  ╚═╝
 ```
 
-### 🩺 **Where AI Meets Healthcare**
+### 🩺 **empowHER, to empower**
 ## Transforming Chaos Into Clarity, One Visit at a Time
 
 [![Sun Life](https://img.shields.io/badge/SPONSOR-Sun%20Life-00A9E0?style=for-the-badge&logo=data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjQiIGhlaWdodD0iMjQiIHZpZXdCb3g9IjAgMCAyNCAyNCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPGNpcmNsZSBjeD0iMTIiIGN5PSIxMiIgcj0iMTAiIGZpbGw9IndoaXRlIi8+Cjwvc3ZnPg==&labelColor=005EB8)](https://sunlife.ca)
