@@ -1,28 +1,34 @@
 import type { ReactNode } from "react";
-import { Content, Header, HeaderName, SkipToContent, Theme } from "@carbon/react";
+import Link from "next/link";
 import { TopNav } from "@/components/shell/top-nav";
 
 export function AppShell({ children }: { children: ReactNode }) {
   return (
-    <Theme theme="g10">
-      <div className="min-h-screen bg-[#f4f4f4]">
-        <SkipToContent href="#main-content" />
-        <Header aria-label="EmpowHER Clinic Copilot">
-          <HeaderName href="/" prefix="EmpowHER">
-            Clinic Copilot
-          </HeaderName>
-          <TopNav />
-        </Header>
+    <div className="min-h-screen" style={{ background: "var(--eh-neutral-50)" }}>
+      <a href="#main-content" className="eh-skip-link">Skip to main content</a>
 
-        <Content id="main-content" className="px-4 py-6 sm:px-6 lg:px-8 lg:py-8">
-          <div className="mx-auto w-full max-w-7xl">
-            <p className="mb-4 text-xs font-semibold tracking-[0.08em] text-[#6f6f6f] uppercase">
-              Genesis 2026
-            </p>
-            {children}
+      <header className="eh-header" role="banner">
+        <div className="eh-header-inner">
+          <Link href="/" className="eh-logo" aria-label="EmpowHER Clinic Copilot home">
+            <span className="eh-logo-mark" aria-hidden="true">E</span>
+            <span className="eh-logo-name">
+              empowHER <span className="eh-logo-product">Clinic Copilot</span>
+            </span>
+          </Link>
+
+          <TopNav />
+
+          <div className="eh-header-badge" aria-label="Version: Genesis 2026">
+            <span>Genesis 2026</span>
           </div>
-        </Content>
-      </div>
-    </Theme>
+        </div>
+      </header>
+
+      <main id="main-content" className="eh-main">
+        <div className="eh-page-container">
+          {children}
+        </div>
+      </main>
+    </div>
   );
 }

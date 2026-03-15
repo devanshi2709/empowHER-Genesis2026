@@ -11,7 +11,6 @@ import {
   SelectItem,
   TextArea,
   TextInput,
-  Tile,
 } from "@carbon/react";
 import { ChartLine, WatsonHealth3DMprToggle, UserFollow } from "@carbon/icons-react";
 import { PageLayout } from "@/components/layout/page-layout";
@@ -149,7 +148,7 @@ export default function SymptomTrackerPage() {
       }
     >
       {effectiveViewState === "idle" ? (
-        <Tile className="empowher-surface p-5 md:p-6">
+        <div className="empowher-surface p-5 md:p-6">
           <InlineNotification
             kind="info"
             lowContrast
@@ -158,7 +157,7 @@ export default function SymptomTrackerPage() {
             subtitle="Generate symptom-tracker detail from the latest transcript context."
             className="!max-w-none"
           />
-        </Tile>
+        </div>
       ) : null}
 
       {effectiveViewState === "loading" ? (

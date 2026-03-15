@@ -6,20 +6,19 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-  Tag,
-  Tile,
 } from "@carbon/react";
+import { StatusTag } from "@/components/ui/status-tag";
 import type { VisitItem } from "@/lib/live-types";
 
-const statusTone: Record<VisitItem["status"], "gray" | "blue" | "green"> = {
-  Intake: "gray",
-  "In progress": "blue",
-  "Ready for plan": "green",
+const statusTone: Record<VisitItem["status"], "neutral" | "info" | "success"> = {
+  Intake:           "neutral",
+  "In progress":    "info",
+  "Ready for plan": "success",
 };
 
 export function TodayWorklist({ visits }: { visits: VisitItem[] }) {
   return (
-    <Tile className="empowher-surface p-5 md:p-6">
+    <div className="empowher-section-card p-5 md:p-6">
       <TableContainer
         title="Today's Visits"
         description="Keep each visit moving from intake to care-plan readiness."
@@ -37,20 +36,21 @@ export function TodayWorklist({ visits }: { visits: VisitItem[] }) {
           <TableBody>
             {visits.map((visit) => (
               <TableRow key={visit.id}>
-                <TableCell className="font-medium">{visit.id}</TableCell>
+                <TableCell className="font-medium text-[#0f172a]">{visit.id}</TableCell>
                 <TableCell>{visit.patient}</TableCell>
                 <TableCell>{visit.reason}</TableCell>
                 <TableCell>{visit.time}</TableCell>
                 <TableCell>
-                  <Tag type={statusTone[visit.status]}>{visit.status}</Tag>
+                  <StatusTag label={visit.status} tone={statusTone[visit.status]} />
                 </TableCell>
               </TableRow>
             ))}
           </TableBody>
         </Table>
       </TableContainer>
-
-      <p className="empowher-quiet-copy mt-3 text-xs">Source: live dashboard payload from transcript workflow context.</p>
-    </Tile>
+      <p className="empowher-quiet-copy mt-3 text-xs">
+        Source: live dashboard payload from transcript workflow context.
+      </p>
+    </div>
   );
 }

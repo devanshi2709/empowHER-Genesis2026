@@ -1,5 +1,5 @@
 import type { ReactNode } from "react";
-import { AILabel, AILabelContent, InlineNotification, Tile } from "@carbon/react";
+import { AILabel, AILabelContent, InlineNotification } from "@carbon/react";
 import { StatusTag } from "@/components/ui/status-tag";
 import { cn } from "@/lib/utils";
 
@@ -19,15 +19,29 @@ export function AIOutputPanel({
   className,
 }: AIOutputPanelProps) {
   return (
-    <Tile className={cn("empowher-ai-panel p-5 md:p-6", className)}>
+    <div className={cn("empowher-ai-panel p-5 md:p-6", className)}>
       <div className="flex flex-wrap items-start justify-between gap-3">
         <div>
-          <h3 className="text-lg font-semibold tracking-tight text-[#161616]">{title}</h3>
-          {description ? <p className="empowher-quiet-copy mt-1 text-sm">{description}</p> : null}
+          <div className="flex items-center gap-2">
+            <span
+              className="inline-flex h-6 w-6 items-center justify-center rounded-md text-xs"
+              style={{
+                background: "linear-gradient(135deg, #1e40af 0%, #7c3aed 100%)",
+                color: "white",
+              }}
+              aria-hidden="true"
+            >
+              ✦
+            </span>
+            <h3 className="text-base font-semibold tracking-tight text-[#0f172a]">{title}</h3>
+          </div>
+          {description ? (
+            <p className="empowher-quiet-copy mt-1 text-sm">{description}</p>
+          ) : null}
         </div>
         <div className="flex items-center gap-2">
           <StatusTag
-            label={reviewed ? "Clinician reviewed" : "Needs clinician review"}
+            label={reviewed ? "Clinician reviewed" : "Needs review"}
             tone={reviewed ? "success" : "warning"}
           />
           <AILabel kind="inline" textLabel="AI generated" size="sm">
@@ -45,12 +59,12 @@ export function AIOutputPanel({
             kind="warning"
             lowContrast
             hideCloseButton
-            title="Review required"
-            subtitle="This AI-generated content should be validated by a clinician before finalizing care actions."
-            className="!max-w-none rounded-md border border-[#e2d1ff] bg-[#f5efff]"
+            title="Clinician review required"
+            subtitle="Validate this AI-generated content before finalizing care actions."
+            className="!max-w-none"
           />
         ) : null}
       </div>
-    </Tile>
+    </div>
   );
 }

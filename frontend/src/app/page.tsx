@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { useMemo, useState } from "react";
-import { InlineNotification, Tile } from "@carbon/react";
+import { InlineNotification } from "@carbon/react";
 import { ChartLine, Document, Notebook } from "@carbon/icons-react";
 import { KpiCards } from "@/components/dashboard/kpi-cards";
 import { PendingPlans } from "@/components/dashboard/pending-plans";
@@ -99,7 +99,7 @@ export default function ClinicDashboard() {
       }
     >
       {effectiveViewState === "idle" ? (
-        <Tile className="empowher-surface p-5">
+        <div className="empowher-surface p-5">
           <InlineNotification
             kind="info"
             lowContrast
@@ -108,7 +108,7 @@ export default function ClinicDashboard() {
             subtitle="Generate dashboard data from your latest handoff and care-plan context."
             className="!max-w-none"
           />
-        </Tile>
+        </div>
       ) : null}
 
       {effectiveViewState === "loading" ? (

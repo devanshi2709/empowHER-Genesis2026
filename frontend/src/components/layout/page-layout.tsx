@@ -23,16 +23,19 @@ export function PageLayout({
 }: PageLayoutProps) {
   return (
     <div className={cn("space-y-7 md:space-y-8", className)}>
-      <header className="empowher-page-header p-6 md:p-7">
+      <header className="empowher-page-header p-6 md:p-8">
         <SectionHeader
           eyebrow={eyebrow}
           title={title}
           description={description}
           actions={actions}
+          onDark
           className="relative z-[1]"
         />
       </header>
-      {meta ? <section className="empowher-meta-grid md:grid-cols-3">{meta}</section> : null}
+      {meta ? (
+        <section className="empowher-meta-grid md:grid-cols-3">{meta}</section>
+      ) : null}
       <div className="space-y-5 md:space-y-6">{children}</div>
     </div>
   );

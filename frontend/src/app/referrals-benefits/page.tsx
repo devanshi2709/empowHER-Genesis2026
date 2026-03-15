@@ -2,7 +2,7 @@
 
 import { useMemo, useState } from "react";
 import Link from "next/link";
-import { Accordion, AccordionItem, InlineNotification, Tile } from "@carbon/react";
+import { Accordion, AccordionItem, InlineNotification } from "@carbon/react";
 import { ChartLine, Notebook, UserFollow } from "@carbon/icons-react";
 import { PageLayout } from "@/components/layout/page-layout";
 import { SectionCard } from "@/components/layout/section-card";
@@ -123,7 +123,7 @@ export default function ReferralsBenefitsPage() {
       }
     >
       {effectiveViewState === "idle" ? (
-        <Tile className="empowher-surface p-5 md:p-6">
+        <div className="empowher-surface p-5 md:p-6">
           <InlineNotification
             kind="info"
             lowContrast
@@ -132,7 +132,7 @@ export default function ReferralsBenefitsPage() {
             subtitle="Generate referrals and benefits workspace data from backend context."
             className="!max-w-none"
           />
-        </Tile>
+        </div>
       ) : null}
 
       {effectiveViewState === "loading" ? (

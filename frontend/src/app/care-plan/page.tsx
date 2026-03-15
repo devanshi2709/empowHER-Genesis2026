@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { useState } from "react";
-import { Accordion, AccordionItem, Checkbox, InlineNotification, Tile } from "@carbon/react";
+import { Accordion, AccordionItem, Checkbox, InlineNotification } from "@carbon/react";
 import { ChartLine, Document, Notebook } from "@carbon/icons-react";
 import { PageLayout } from "@/components/layout/page-layout";
 import { SectionCard } from "@/components/layout/section-card";
@@ -103,7 +103,7 @@ export default function CarePlan() {
       }
     >
       {effectiveViewState === "idle" && handoff ? (
-        <Tile className="empowher-surface p-5 md:p-6">
+        <div className="empowher-surface p-5 md:p-6">
           <InlineNotification
             kind="info"
             lowContrast
@@ -112,7 +112,7 @@ export default function CarePlan() {
             subtitle={`Data captured at ${new Date(handoff.savedAt).toLocaleString()}. Generate the latest care plan from backend context.`}
             className="!max-w-none"
           />
-        </Tile>
+        </div>
       ) : null}
 
       {effectiveViewState === "loading" ? (

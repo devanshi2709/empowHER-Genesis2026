@@ -1,4 +1,4 @@
-import { InlineLoading, SkeletonText, Tile } from "@carbon/react";
+import { InlineLoading } from "@carbon/react";
 import { cn } from "@/lib/utils";
 
 type LoadingStateProps = {
@@ -13,21 +13,25 @@ export function LoadingState({
   className,
 }: LoadingStateProps) {
   return (
-    <Tile
+    <div
       className={cn(
-        "empowher-surface border-[#c5d6f3] bg-[#f3f7ff] p-6",
+        "empowher-surface flex flex-col gap-4 p-6",
         className,
       )}
       role="status"
       aria-live="polite"
     >
-      <div className="space-y-3">
-        <InlineLoading status="active" description={title} />
-        <SkeletonText heading width="40%" />
-        <SkeletonText width="95%" />
-        <SkeletonText width="80%" />
+      <div className="flex items-center gap-3">
+        <InlineLoading status="active" description="" />
+        <p className="text-sm font-medium text-[#0f172a]">{title}</p>
       </div>
-      <p className="empowher-quiet-copy mt-3 text-sm">{description}</p>
-    </Tile>
+      <div className="space-y-2.5">
+        <div className="h-3 w-2/5 animate-pulse rounded-full bg-[#e2e8f0]" />
+        <div className="h-2.5 w-full animate-pulse rounded-full bg-[#f1f5f9]" />
+        <div className="h-2.5 w-4/5 animate-pulse rounded-full bg-[#f1f5f9]" />
+        <div className="h-2.5 w-3/5 animate-pulse rounded-full bg-[#f1f5f9]" />
+      </div>
+      <p className="empowher-quiet-copy text-xs">{description}</p>
+    </div>
   );
 }
