@@ -1,34 +1,27 @@
-import type { PacketSection } from "@/lib/mock-referrals-benefits";
-import { cn } from "@/lib/utils";
+import { Tag, Tile } from "@carbon/react";
+import type { PacketSection } from "@/lib/live-types";
 
 export function PacketPreview({ sections }: { sections: PacketSection[] }) {
   return (
-    <section className="rounded-xl border bg-card p-6 shadow-sm">
-      <h3 className="text-lg font-semibold tracking-tight">Referral Packet Preview</h3>
-      <p className="mt-1 text-sm text-muted-foreground">
+    <Tile className="empowher-surface p-6">
+      <h3 className="text-lg font-semibold tracking-tight text-[#161616]">Referral Packet Preview</h3>
+      <p className="empowher-quiet-copy mt-1 text-sm">
         Validate packet completeness before sending to imaging, physio, and counseling partners.
       </p>
 
       <ul className="mt-4 space-y-3">
         {sections.map((section) => (
-          <li key={section.section} className="rounded-lg border p-3">
+          <li key={section.section} className="empowher-surface-subtle p-3">
             <div className="flex flex-wrap items-center justify-between gap-2">
-              <p className="font-medium">{section.section}</p>
-              <span
-                className={cn(
-                  "rounded-full px-2 py-0.5 text-xs font-semibold",
-                  section.included
-                    ? "bg-emerald-100 text-emerald-700"
-                    : "bg-amber-100 text-amber-700",
-                )}
-              >
+              <p className="font-medium text-[#161616]">{section.section}</p>
+              <Tag type={section.included ? "green" : "warm-gray"}>
                 {section.included ? "Included" : "Missing"}
-              </span>
+              </Tag>
             </div>
-            <p className="mt-2 text-xs text-muted-foreground">{section.note}</p>
+            <p className="mt-2 text-xs text-[#697077]">{section.note}</p>
           </li>
         ))}
       </ul>
-    </section>
+    </Tile>
   );
 }

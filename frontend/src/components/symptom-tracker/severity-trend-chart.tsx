@@ -9,7 +9,7 @@ import {
   XAxis,
   YAxis,
 } from "recharts";
-import type { SymptomTrendPoint } from "@/lib/mock-symptom-tracker";
+import type { SymptomTrendPoint } from "@/lib/live-types";
 
 export function SeverityTrendChart({ trendSeries }: { trendSeries: SymptomTrendPoint[] }) {
   return (

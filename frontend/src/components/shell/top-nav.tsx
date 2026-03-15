@@ -2,8 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Button } from "@/components/ui/button";
-import { cn } from "@/lib/utils";
+import { HeaderMenuItem, HeaderNavigation } from "@carbon/react";
 
 const navItems = [
   { href: "/", label: "Dashboard" },
@@ -17,21 +16,21 @@ export function TopNav() {
   const pathname = usePathname();
 
   return (
-    <nav className="flex flex-wrap items-center gap-2">
+    <HeaderNavigation aria-label="Main navigation" className="max-w-full overflow-x-auto">
       {navItems.map((item) => {
         const isActive = pathname === item.href;
         return (
-          <Link key={item.href} href={item.href}>
-            <Button
-              variant={isActive ? "default" : "outline"}
-              className={cn("min-w-[7.5rem]", isActive && "shadow-xs")}
-              aria-current={isActive ? "page" : undefined}
-            >
-              {item.label}
-            </Button>
-          </Link>
+          <HeaderMenuItem
+            key={item.href}
+            as={Link}
+            href={item.href}
+            isCurrentPage={isActive}
+            aria-current={isActive ? "page" : undefined}
+          >
+            {item.label}
+          </HeaderMenuItem>
         );
       })}
-    </nav>
+    </HeaderNavigation>
   );
 }

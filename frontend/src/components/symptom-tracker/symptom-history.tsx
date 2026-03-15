@@ -1,43 +1,39 @@
-import type { SymptomLogEntry, TrackerState } from "@/lib/mock-symptom-tracker";
-import { cn } from "@/lib/utils";
+import { Tag, Tile } from "@carbon/react";
+import type { SymptomLogEntry, TrackerState } from "@/lib/live-types";
 
-const stateTone: Record<TrackerState, string> = {
-  Active: "bg-blue-100 text-blue-700",
-  Improving: "bg-emerald-100 text-emerald-700",
-  Worsening: "bg-amber-100 text-amber-700",
-  "Follow-up needed": "bg-destructive/10 text-destructive",
+const stateTone: Record<TrackerState, "blue" | "green" | "warm-gray" | "red"> = {
+  Active: "blue",
+  Improving: "green",
+  Worsening: "warm-gray",
+  "Follow-up needed": "red",
 };
 
 export function SymptomHistory({ entries }: { entries: SymptomLogEntry[] }) {
   return (
-    <section className="rounded-xl border bg-card p-6 shadow-sm">
-      <h3 className="text-lg font-semibold tracking-tight">Symptom Log History</h3>
-      <p className="mt-1 text-sm text-muted-foreground">
+    <Tile className="empowher-surface p-6">
+      <h3 className="text-lg font-semibold tracking-tight text-[#161616]">Symptom Log History</h3>
+      <p className="empowher-quiet-copy mt-1 text-sm">
         Visit-ready symptom notes with severity, state assessment, and recommended next action.
       </p>
 
       <ul className="mt-4 space-y-3">
         {entries.map((entry) => (
-          <li key={entry.id} className="rounded-lg border p-4">
+          <li key={entry.id} className="empowher-surface-subtle p-4">
             <div className="flex flex-wrap items-center justify-between gap-2">
               <div>
-                <p className="font-medium">{entry.category}</p>
-                <p className="text-xs text-muted-foreground">{entry.id} • {entry.date}</p>
+                <p className="font-medium text-[#161616]">{entry.category}</p>
+                <p className="text-xs text-[#697077]">{entry.id} • {entry.date}</p>
               </div>
               <div className="flex flex-wrap items-center gap-2">
-                <span className="rounded-full bg-muted px-2 py-0.5 text-xs font-semibold">
-                  Severity {entry.severity}/10
-                </span>
-                <span className={cn("rounded-full px-2 py-0.5 text-xs font-semibold", stateTone[entry.state])}>
-                  {entry.state}
-                </span>
+                <Tag type="gray">Severity {entry.severity}/10</Tag>
+                <Tag type={stateTone[entry.state]}>{entry.state}</Tag>
               </div>
             </div>
-            <p className="mt-3 text-sm">{entry.notes}</p>
-            <p className="mt-2 text-xs text-muted-foreground">Action: {entry.action}</p>
+            <p className="mt-3 text-sm text-[#393939]">{entry.notes}</p>
+            <p className="mt-2 text-xs text-[#697077]">Action: {entry.action}</p>
           </li>
         ))}
       </ul>
-    </section>
+    </Tile>
   );
 }

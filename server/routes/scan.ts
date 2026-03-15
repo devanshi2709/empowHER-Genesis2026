@@ -57,19 +57,24 @@ router.post("/", upload.single("image"), async (req: Request, res: Response) => 
   try {
     const { insight } = await generateInsight(prompt);
 
-    // Step 3: try to parse structured JSON from the AI response
+    // Step 3: parse structured JSON from the AI response
     let card: { condition: string; confidence: number; recommendation: string };
     try {
-      // WatsonX may wrap JSON in markdown code fences — strip them
       const cleaned = insight.replace(/```json|```/g, "").trim();
       card = JSON.parse(cleaned);
-    } catch {
-      // Fallback: return raw insight if JSON parse fails
-      card = {
-        condition: insight,
-        confidence: 0,
-        recommendation: "Please consult a healthcare professional.",
-      };
+      if (
+        typeof card.condition !== "string" ||
+        typeof card.confidence !== "number" ||
+        typeof card.recommendation !== "string"
+      ) {
+        throw new Error("Scan response missing required fields.");
+      }
+    } catch (parseError: unknown) {
+      const message = parseError instanceof Error ? parseError.message : "Unknown parse error";
+      return res.status(502).json({
+        success: false,
+        message: `WatsonX returned non-JSON scan output: ${message}`,
+      });
     }
 
     return res.json({

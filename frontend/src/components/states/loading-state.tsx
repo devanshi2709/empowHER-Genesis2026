@@ -1,3 +1,4 @@
+import { InlineLoading, SkeletonText, Tile } from "@carbon/react";
 import { cn } from "@/lib/utils";
 
 type LoadingStateProps = {
@@ -12,22 +13,21 @@ export function LoadingState({
   className,
 }: LoadingStateProps) {
   return (
-    <section
+    <Tile
       className={cn(
-        "rounded-xl border bg-card p-6 shadow-sm",
+        "empowher-surface border-[#c5d6f3] bg-[#f3f7ff] p-6",
         className,
       )}
       role="status"
       aria-live="polite"
     >
-      <div className="space-y-4">
-        <div className="h-2 w-40 animate-pulse rounded bg-muted" />
-        <div className="h-7 w-72 animate-pulse rounded bg-muted" />
-        <div className="h-4 w-full max-w-2xl animate-pulse rounded bg-muted" />
-        <div className="h-4 w-3/4 animate-pulse rounded bg-muted" />
+      <div className="space-y-3">
+        <InlineLoading status="active" description={title} />
+        <SkeletonText heading width="40%" />
+        <SkeletonText width="95%" />
+        <SkeletonText width="80%" />
       </div>
-      <h2 className="mt-6 text-lg font-semibold">{title}</h2>
-      <p className="mt-1 text-sm text-muted-foreground">{description}</p>
-    </section>
+      <p className="empowher-quiet-copy mt-3 text-sm">{description}</p>
+    </Tile>
   );
 }

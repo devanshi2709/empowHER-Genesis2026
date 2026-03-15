@@ -1,4 +1,5 @@
 import type { ReactNode } from "react";
+import { InlineNotification, Tile } from "@carbon/react";
 import { cn } from "@/lib/utils";
 
 type ErrorStateProps = {
@@ -15,17 +16,22 @@ export function ErrorState({
   className,
 }: ErrorStateProps) {
   return (
-    <section
+    <Tile
       className={cn(
-        "rounded-xl border border-destructive/30 bg-destructive/5 p-6 shadow-sm",
+        "empowher-surface border-[#f1c6cd] bg-[#fff5f6] p-5",
         className,
       )}
       role="alert"
     >
-      <p className="text-sm font-semibold text-destructive">Issue detected</p>
-      <h2 className="mt-1 text-lg font-semibold tracking-tight">{title}</h2>
-      <p className="mt-2 text-sm text-muted-foreground">{description}</p>
+      <InlineNotification
+        kind="error"
+        lowContrast
+        hideCloseButton
+        title={title}
+        subtitle={description}
+        className="!max-w-none rounded-md border border-[#f2d3d7] bg-[#fff1f3]"
+      />
       {action ? <div className="mt-4">{action}</div> : null}
-    </section>
+    </Tile>
   );
 }

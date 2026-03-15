@@ -1,11 +1,11 @@
-import type { TrackerState } from "@/lib/mock-symptom-tracker";
-import { cn } from "@/lib/utils";
+import { Tag, Tile } from "@carbon/react";
+import type { TrackerState } from "@/lib/live-types";
 
-const stateTone: Record<TrackerState, string> = {
-  Active: "bg-blue-100 text-blue-700",
-  Improving: "bg-emerald-100 text-emerald-700",
-  Worsening: "bg-amber-100 text-amber-700",
-  "Follow-up needed": "bg-destructive/10 text-destructive",
+const stateTone: Record<TrackerState, "blue" | "green" | "warm-gray" | "red"> = {
+  Active: "blue",
+  Improving: "green",
+  Worsening: "warm-gray",
+  "Follow-up needed": "red",
 };
 
 type TrackerOverviewProps = {
@@ -28,39 +28,39 @@ export function TrackerOverview({
   highRiskCount,
 }: TrackerOverviewProps) {
   return (
-    <section className="rounded-xl border bg-card p-6 shadow-sm">
+    <Tile className="empowher-surface p-6">
       <div className="flex flex-wrap items-start justify-between gap-4">
         <div>
-          <p className="text-sm font-medium text-muted-foreground">Symptom Tracking</p>
-          <h2 className="mt-1 text-2xl font-semibold tracking-tight">Gynecology Symptom Tracker</h2>
-          <p className="mt-2 max-w-3xl text-sm text-muted-foreground">
-            Track pelvic pain, bleeding changes, menopause/postpartum symptoms, and medication tolerance over time.
+          <p className="text-sm font-medium text-[#525252]">Case Snapshot</p>
+          <h2 className="mt-1 text-xl font-semibold tracking-tight text-[#161616]">
+            Symptom Status Overview
+          </h2>
+          <p className="empowher-quiet-copy mt-2 max-w-3xl text-sm">
+            Trend summary across pelvic pain, bleeding changes, menopause or postpartum symptoms, and treatment tolerance.
           </p>
         </div>
-        <div className="rounded-lg border bg-muted/40 px-3 py-2 text-sm">
-          <p className="font-medium">{patientName}</p>
-          <p className="text-muted-foreground">{careContext}</p>
+        <div className="empowher-surface-subtle px-3 py-2 text-sm">
+          <p className="font-medium text-[#161616]">{patientName}</p>
+          <p className="text-[#525252]">{careContext}</p>
         </div>
       </div>
 
       <div className="mt-4 grid gap-3 border-t pt-4 sm:grid-cols-3">
-        <article className="rounded-lg border p-3">
-          <p className="text-xs text-muted-foreground">Current tracker state</p>
-          <p className={cn("mt-2 inline-flex rounded-full px-2 py-0.5 text-xs font-semibold", stateTone[currentState])}>
-            {currentState}
-          </p>
+        <article className="empowher-surface-subtle p-3">
+          <p className="text-xs text-[#525252]">Current tracker state</p>
+          <p className="mt-2"><Tag type={stateTone[currentState]}>{currentState}</Tag></p>
         </article>
-        <article className="rounded-lg border p-3">
-          <p className="text-xs text-muted-foreground">7-day average severity</p>
-          <p className="mt-2 text-xl font-semibold">{avgSeverity.toFixed(1)} / 10</p>
+        <article className="empowher-surface-subtle p-3">
+          <p className="text-xs text-[#525252]">7-day average severity</p>
+          <p className="mt-2 text-xl font-semibold text-[#161616]">{avgSeverity.toFixed(1)} / 10</p>
         </article>
-        <article className="rounded-lg border p-3">
-          <p className="text-xs text-muted-foreground">High-risk events (severity 7+)</p>
-          <p className="mt-2 text-xl font-semibold">{highRiskCount}</p>
+        <article className="empowher-surface-subtle p-3">
+          <p className="text-xs text-[#525252]">High-risk events (severity 7+)</p>
+          <p className="mt-2 text-xl font-semibold text-[#161616]">{highRiskCount}</p>
         </article>
       </div>
 
-      <p className="mt-3 text-xs text-muted-foreground">Reviewed by {clinician} • Updated {lastUpdated}</p>
-    </section>
+      <p className="mt-3 text-xs text-[#525252]">Reviewed by {clinician} • Updated {lastUpdated}</p>
+    </Tile>
   );
 }

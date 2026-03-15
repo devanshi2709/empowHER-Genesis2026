@@ -2,42 +2,113 @@
 
 import Link from "next/link";
 import { useState } from "react";
-import { Button } from "@/components/ui/button";
+import { InlineNotification, TextArea, Tile } from "@carbon/react";
+import { Document, Notebook, WatsonHealth3DMprToggle } from "@carbon/icons-react";
+import { PageLayout } from "@/components/layout/page-layout";
+import { SectionCard } from "@/components/layout/section-card";
+import { SummaryTile } from "@/components/layout/summary-tile";
 import { EmptyState } from "@/components/states/empty-state";
 import { ErrorState } from "@/components/states/error-state";
 import { LoadingState } from "@/components/states/loading-state";
-import { DemoModeToggle } from "@/components/states/demo-mode-toggle";
-import { DemoFlow } from "@/components/shell/demo-flow";
+import { AIOutputPanel } from "@/components/ui/ai-output-panel";
+import { Button } from "@/components/ui/button";
+import { generateScribeHandoff } from "@/lib/api";
+import { saveLiveHandoff } from "@/lib/live-handoff";
 
 type ScribeViewState = "live" | "loading" | "empty" | "error" | "success";
 
 export default function VisitScribe() {
   const [transcript, setTranscript] = useState("");
   const [viewState, setViewState] = useState<ScribeViewState>("live");
+  const [errorMessage, setErrorMessage] = useState("");
+  const [insight, setInsight] = useState("");
+  const [energyLevel, setEnergyLevel] = useState<"low" | "medium" | "high" | null>(null);
+  const [symptomTags, setSymptomTags] = useState<string[]>([]);
+  const [extractionSource, setExtractionSource] = useState<string>("");
+
+  async function handleGenerateDraft() {
+    const trimmed = transcript.trim();
+    if (!trimmed) {
+      setViewState("empty");
+      return;
+    }
+
+    try {
+      setViewState("loading");
+      setErrorMessage("");
+      const handoffResponse = await generateScribeHandoff(trimmed);
+      setInsight(handoffResponse.insight);
+      setEnergyLevel(handoffResponse.energy_level);
+      setSymptomTags(handoffResponse.symptom_tags);
+      setExtractionSource(handoffResponse.extraction_source || "unknown");
+      saveLiveHandoff({
+        transcript: trimmed,
+        insight: handoffResponse.insight,
+        energyLevel: handoffResponse.energy_level,
+        symptomTags: handoffResponse.symptom_tags,
+        extractionSource: handoffResponse.extraction_source,
+        savedAt: new Date().toISOString(),
+      });
+      setViewState("success");
+    } catch (error) {
+      setErrorMessage(error instanceof Error ? error.message : "Failed to process transcript");
+      setViewState("error");
+    }
+  }
 
   return (
-    <div className="mx-auto max-w-5xl space-y-6">
-      <section className="rounded-xl border bg-card p-6 shadow-sm">
-        <p className="text-sm font-medium text-muted-foreground">Visit Intake</p>
-        <h2 className="mt-1 text-2xl font-semibold tracking-tight">Visit Scribe Workspace</h2>
-        <p className="mt-2 max-w-3xl text-sm text-muted-foreground">
-          Capture the clinician-patient conversation and convert it into a structured handoff for care planning.
-        </p>
-      </section>
-
-      <DemoFlow current="scribe" />
-
-      <DemoModeToggle
-        active={viewState}
-        onChange={setViewState}
-        options={[
-          { key: "live", label: "Live" },
-          { key: "loading", label: "Loading" },
-          { key: "empty", label: "Empty" },
-          { key: "error", label: "Error" },
-          { key: "success", label: "Success" },
-        ]}
-      />
+    <PageLayout
+      eyebrow="Visit Intake"
+      title="Visit Scribe Workspace"
+      description="Capture the clinician-patient conversation and generate a structured handoff for downstream care planning."
+      actions={
+        <>
+          <Button size="lg" disabled={!transcript.trim()} onClick={handleGenerateDraft}>
+            Generate handoff
+          </Button>
+          <Button as={Link} href="/care-plan" variant="outline">Open Care Plan</Button>
+        </>
+      }
+      meta={
+        <>
+          <SummaryTile
+            label="Scribe status"
+            value={viewState === "success" ? "Handoff ready" : "Awaiting transcript"}
+            helper="Use transcript capture to unlock downstream plan generation."
+            icon={Document}
+            tone="blue"
+            statusLabel={viewState === "success" ? "Ready" : "Pending"}
+            statusTone={viewState === "success" ? "success" : "warning"}
+          />
+          <SummaryTile
+            label="Check-in extraction"
+            value={extractionSource ? `Source: ${extractionSource}` : "Not extracted yet"}
+            helper="Energy level and symptom tags are extracted per transcript submit."
+            icon={WatsonHealth3DMprToggle}
+            tone="purple"
+            tagLabel={symptomTags.length ? `${symptomTags.length} tags captured` : "No tags captured"}
+          />
+          <SummaryTile
+            label="Backend mode"
+            value="Live /api/workflow/scribe"
+            helper="Transcript summarization and extraction are generated by backend IBM calls."
+            icon={Notebook}
+            tone="neutral"
+            tagLabel="Live endpoint mode"
+          />
+        </>
+      }
+    >
+      <Tile className="empowher-surface p-5 md:p-6">
+        <InlineNotification
+          kind="info"
+          lowContrast
+          hideCloseButton
+          title="Live extraction mode"
+          subtitle="The transcript is sent to backend workflow endpoint, then saved for Care Plan and downstream pages."
+          className="!max-w-none"
+        />
+      </Tile>
 
       {viewState === "loading" ? (
         <LoadingState
@@ -49,65 +120,91 @@ export default function VisitScribe() {
       {viewState === "error" ? (
         <ErrorState
           title="Visit extraction unavailable"
-          description="The transcript could not be processed in this demo state. Retry to continue care-plan drafting."
-          action={<Button size="sm" onClick={() => setViewState("live")}>Retry extraction</Button>}
+          description={errorMessage || "The transcript could not be processed. Retry to continue care-plan drafting."}
+          action={
+            <Button size="sm" onClick={() => setViewState("live")}>
+              Retry extraction
+            </Button>
+          }
         />
       ) : null}
 
       {viewState === "empty" ? (
         <EmptyState
           title="No transcript added yet"
-          description="Paste a visit transcript to generate care-plan actions and continue the clinic demo flow."
+          description="Paste a visit transcript to generate care-plan actions and continue the workflow."
           action={<Button onClick={() => setViewState("live")}>Open transcript editor</Button>}
         />
       ) : null}
 
       {(viewState === "live" || viewState === "success") ? (
-        <>
-          {viewState === "success" ? (
-            <section className="rounded-xl border border-emerald-200 bg-emerald-50 p-5 shadow-sm">
-              <p className="text-sm font-semibold text-emerald-800">Visit extraction complete</p>
-              <h3 className="mt-1 text-lg font-semibold tracking-tight text-emerald-900">
-                Draft care-plan actions are ready for review
-              </h3>
-              <p className="mt-2 text-sm text-emerald-900/90">
-                Continue to the Care Plan workspace to confirm instructions, tasks, and next-step coordination.
-              </p>
-              <div className="mt-3">
-                <Link href="/care-plan">
-                  <Button size="sm">Continue to Care Plan</Button>
-                </Link>
-              </div>
-            </section>
-          ) : null}
-
-          <section className="rounded-xl border bg-card p-6 shadow-sm">
-            <label htmlFor="transcript" className="mb-2 block text-sm font-medium">
-              Visit transcript
-            </label>
-            <textarea
+        <section className="grid gap-4 xl:grid-cols-[1.45fr_1fr]">
+          <SectionCard
+            title="Visit Transcript Input"
+            description="Capture key symptoms, timeline, and concerns before generating handoff guidance."
+          >
+            <TextArea
               id="transcript"
+              labelText="Visit transcript"
+              helperText="Include patient symptoms, duration, concerns, and any care preferences."
               value={transcript}
               onChange={(e) => setTranscript(e.target.value)}
-              placeholder="Paste the clinician-patient conversation here..."
-              rows={14}
-              className="w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+              placeholder="Example: Patient reports severe pelvic pain, heavy bleeding, and poor sleep for 3 days..."
+              rows={16}
             />
             <div className="mt-4 flex flex-wrap items-center gap-3">
-              <Button
-                size="lg"
-                disabled={!transcript.trim()}
-                onClick={() => setViewState("success")}
-              >
-                Generate care-plan draft
+              <Button disabled={!transcript.trim()} onClick={handleGenerateDraft}>
+                Generate care-plan handoff
               </Button>
-              <p className="text-xs text-muted-foreground">
-                Demo mode: actions are generated from local mock state.
+              <p className="text-xs text-[#697077]">Tip: include symptom severity and timeline for better extraction quality.</p>
+            </div>
+          </SectionCard>
+
+          <AIOutputPanel
+            title="Latest Extraction"
+            description="AI summary and structured symptom signals used by the next workflow steps."
+            reviewed={false}
+          >
+            <p className="empowher-surface-subtle p-3 text-sm leading-6 text-[#161616]">
+              {insight || "No summary generated yet. Submit a transcript to create the handoff."}
+            </p>
+            <div className="grid gap-2 text-sm sm:grid-cols-2">
+              <p className="empowher-surface-subtle px-3 py-2 text-[#161616]">
+                Energy level:{" "}
+                <span className="font-medium uppercase">{energyLevel ?? "pending"}</span>
+              </p>
+              <p className="empowher-surface-subtle px-3 py-2 text-[#161616]">
+                Source: <span className="font-medium">{extractionSource || "pending"}</span>
               </p>
             </div>
-          </section>
-        </>
+            <p className="text-xs text-[#697077]">
+              Symptom tags: {symptomTags.length ? symptomTags.join(", ") : "None tagged yet"}
+            </p>
+            {viewState === "success" ? (
+              <Button as={Link} href="/care-plan" size="sm">Continue to Care Plan</Button>
+            ) : null}
+          </AIOutputPanel>
+        </section>
       ) : null}
-    </div>
+
+      {(viewState === "live" || viewState === "success") ? (
+        <SectionCard
+          title="Documentation Guidance"
+          description="Structured prompts to improve extraction quality and reduce back-and-forth edits."
+        >
+          <div className="grid gap-3 text-sm md:grid-cols-3">
+            <article className="empowher-surface-subtle px-3 py-3">
+              Include symptom onset, duration, and progression.
+            </article>
+            <article className="empowher-surface-subtle px-3 py-3">
+              Note medication response and tolerance where possible.
+            </article>
+            <article className="empowher-surface-subtle px-3 py-3">
+              Capture patient concerns in plain language for downstream handoff.
+            </article>
+          </div>
+        </SectionCard>
+      ) : null}
+    </PageLayout>
   );
 }

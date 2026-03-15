@@ -1,11 +1,11 @@
-import type { CoordinationStatus } from "@/lib/mock-referrals-benefits";
-import { cn } from "@/lib/utils";
+import { Tag, Tile } from "@carbon/react";
+import type { CoordinationStatus } from "@/lib/live-types";
 
-const statusTone: Record<CoordinationStatus, string> = {
-  "Ready to send": "bg-emerald-100 text-emerald-700",
-  "Needs documents": "bg-amber-100 text-amber-700",
-  "Pending review": "bg-blue-100 text-blue-700",
-  "Follow-up required": "bg-destructive/10 text-destructive",
+const statusTone: Record<CoordinationStatus, "green" | "warm-gray" | "blue" | "red"> = {
+  "Ready to send": "green",
+  "Needs documents": "warm-gray",
+  "Pending review": "blue",
+  "Follow-up required": "red",
 };
 
 type ReferralOverviewProps = {
@@ -30,41 +30,41 @@ export function ReferralOverview({
   blockersCount,
 }: ReferralOverviewProps) {
   return (
-    <section className="rounded-xl border bg-card p-6 shadow-sm">
+    <Tile className="empowher-surface p-6">
       <div className="flex flex-wrap items-start justify-between gap-4">
         <div>
-          <p className="text-sm font-medium text-muted-foreground">Referral Coordination</p>
-          <h2 className="mt-1 text-2xl font-semibold tracking-tight">Referrals and Benefits Workspace</h2>
-          <p className="mt-2 max-w-3xl text-sm text-muted-foreground">
-            Prepare provider handoff packets, verify benefits coverage, and close blockers before specialist routing.
+          <p className="text-sm font-medium text-[#525252]">Case Snapshot</p>
+          <h2 className="mt-1 text-xl font-semibold tracking-tight text-[#161616]">
+            Referral Coordination Status
+          </h2>
+          <p className="empowher-quiet-copy mt-2 max-w-3xl text-sm">
+            Track readiness, coverage checks, and unresolved blockers before specialist handoff.
           </p>
         </div>
-        <div className="rounded-lg border bg-muted/40 px-3 py-2 text-sm">
-          <p className="font-medium">{patientName}</p>
-          <p className="text-muted-foreground">{caseId}</p>
+        <div className="empowher-surface-subtle px-3 py-2 text-sm">
+          <p className="font-medium text-[#161616]">{patientName}</p>
+          <p className="text-[#525252]">{caseId}</p>
         </div>
       </div>
 
       <div className="mt-4 grid gap-3 border-t pt-4 sm:grid-cols-3">
-        <article className="rounded-lg border p-3">
-          <p className="text-xs text-muted-foreground">Current coordination state</p>
-          <p className={cn("mt-2 inline-flex rounded-full px-2 py-0.5 text-xs font-semibold", statusTone[currentStatus])}>
-            {currentStatus}
-          </p>
+        <article className="empowher-surface-subtle p-3">
+          <p className="text-xs text-[#525252]">Current coordination state</p>
+          <p className="mt-2"><Tag type={statusTone[currentStatus]}>{currentStatus}</Tag></p>
         </article>
-        <article className="rounded-lg border p-3">
-          <p className="text-xs text-muted-foreground">Referrals ready to send</p>
-          <p className="mt-2 text-xl font-semibold">{readyCount}</p>
+        <article className="empowher-surface-subtle p-3">
+          <p className="text-xs text-[#525252]">Referrals ready to send</p>
+          <p className="mt-2 text-xl font-semibold text-[#161616]">{readyCount}</p>
         </article>
-        <article className="rounded-lg border p-3">
-          <p className="text-xs text-muted-foreground">Open blockers</p>
-          <p className="mt-2 text-xl font-semibold">{blockersCount}</p>
+        <article className="empowher-surface-subtle p-3">
+          <p className="text-xs text-[#525252]">Open blockers</p>
+          <p className="mt-2 text-xl font-semibold text-[#161616]">{blockersCount}</p>
         </article>
       </div>
 
-      <p className="mt-3 text-xs text-muted-foreground">
+      <p className="mt-3 text-xs text-[#525252]">
         Context: {context} • Reviewed by {clinician} • Updated {updatedAt}
       </p>
-    </section>
+    </Tile>
   );
 }

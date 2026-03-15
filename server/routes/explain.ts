@@ -1,5 +1,4 @@
 import { Router, Request, Response } from "express";
-// WatsonX service wrapper — generateExplanation returns explanation + next_step + benefit
 import { generateExplanation } from "../services/watsonx.js";
 
 const router = Router();
@@ -8,9 +7,9 @@ router.get("/", (_req: Request, res: Response) => {
   res.json({ success: true, message: "Endpoint initialized" });
 });
 
-// POST /api/explain (Phase 4 — Advocacy Layer)
-// Accepts: { condition, symptoms } from Phase 3 Health Insight Card output
-// Returns: explanation, next_step, benefit — all demo/simulation only, not medical advice
+// POST /api/explain
+// Accepts: { data } or legacy { condition, symptoms }
+// Returns: explanation, next_step, benefit from live WatsonX response.
 router.post("/", async (req: Request, res: Response) => {
   const { condition, symptoms, scanId, data } = req.body as {
     condition?: string;
@@ -20,7 +19,6 @@ router.post("/", async (req: Request, res: Response) => {
     data?: Record<string, unknown>;
   };
 
-  // Build a unified data object regardless of which input shape was sent
   const payload: Record<string, unknown> = data ?? { condition, symptoms };
 
   if (!condition && !data) {
