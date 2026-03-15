@@ -1,0 +1,312 @@
+@use '../../styles/globals' as *;
+
+// ─── Top Grid ─────────────────────────────────────────────────
+
+.topGrid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: $space-5;
+
+  @include md {
+    grid-template-columns: 1fr 1.3fr;
+  }
+}
+
+// ─── Connection Score ─────────────────────────────────────────
+
+.connectionScore {
+  display: flex;
+  align-items: center;
+  gap: $space-6;
+}
+
+.scoreRing {
+  position: relative;
+  flex-shrink: 0;
+  width: 100px;
+  height: 100px;
+}
+
+.scoreCircle {
+  width: 100%;
+  height: 100%;
+  transition: stroke-dashoffset 1s ease;
+}
+
+.scoreLabel {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0;
+}
+
+.scoreSub {
+  font-size: $font-size-xs;
+  font-weight: 500;
+  color: $color-text-muted;
+  margin-top: -2px;
+}
+
+.scoreDetails {
+  flex: 1;
+}
+
+.scoreNextLabel {
+  font-size: $font-size-sm;
+  color: $color-text-secondary;
+  line-height: 1.4;
+}
+
+.progressBar {
+  margin-top: $space-3;
+  height: 6px;
+  background: rgba(37, 99, 235, 0.1);
+  border-radius: 9999px;
+  overflow: hidden;
+}
+
+.progressFill {
+  height: 100%;
+  background: linear-gradient(90deg, $color-primary, $color-accent);
+  border-radius: 9999px;
+  transition: width 1s ease;
+}
+
+// ─── Wellness Dimensions ──────────────────────────────────────
+
+.dimensionsList {
+  display: flex;
+  flex-direction: column;
+  gap: $space-4;
+}
+
+.dimension {}
+
+.dimensionHead {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: $space-2;
+}
+
+.dimensionLabel {
+  font-size: $font-size-sm;
+  font-weight: 600;
+  color: $color-text;
+}
+
+.dimTrack {
+  height: 6px;
+  background: rgba(148, 163, 184, 0.12);
+  border-radius: 9999px;
+  overflow: hidden;
+}
+
+.dimFill {
+  height: 100%;
+  border-radius: 9999px;
+  transition: width 0.8s ease;
+}
+
+.dimFill--blue { background: linear-gradient(90deg, #2563eb, #60a5fa); }
+.dimFill--purple { background: linear-gradient(90deg, #8b5cf6, #a78bfa); }
+.dimFill--green { background: linear-gradient(90deg, #059669, #34d399); }
+.dimFill--amber { background: linear-gradient(90deg, #d97706, #fbbf24); }
+
+// ─── Bottom Grid ──────────────────────────────────────────────
+
+.bottomGrid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: $space-8;
+  margin-top: $space-8;
+
+  @include lg {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+.leftCol {
+  display: flex;
+  flex-direction: column;
+  gap: $space-6;
+}
+
+// ─── Network Members ──────────────────────────────────────────
+
+.memberList {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+}
+
+.member {
+  display: flex;
+  align-items: center;
+  gap: $space-3;
+  padding: $space-3 0;
+
+  & + & {
+    border-top: 1px solid $color-border-subtle;
+  }
+}
+
+.memberAvatar {
+  position: relative;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, $color-primary, $color-accent);
+  color: #fff;
+  font-size: $font-size-xs;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.statusDot {
+  position: absolute;
+  bottom: 1px;
+  right: 1px;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  border: 2px solid white;
+}
+
+.statusDot--online { background: #10b981; }
+.statusDot--away { background: #f59e0b; }
+.statusDot--offline { background: #94a3b8; }
+
+.memberInfo {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.memberName {
+  font-size: $font-size-sm;
+  font-weight: 600;
+  color: $color-text;
+}
+
+// ─── Challenges ───────────────────────────────────────────────
+
+.challengeList {
+  display: flex;
+  flex-direction: column;
+  gap: $space-3;
+}
+
+.challenge {
+  display: flex;
+  align-items: center;
+  gap: $space-3;
+}
+
+.challengeBadge {
+  font-size: 22px;
+  flex-shrink: 0;
+}
+
+.challengeInfo {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.challengeTitle {
+  font-size: $font-size-sm;
+  font-weight: 600;
+  color: $color-text;
+}
+
+.challengeProgress {
+  display: flex;
+  align-items: center;
+  gap: $space-2;
+  margin-top: $space-1;
+}
+
+.challengeBar {
+  flex: 1;
+  max-width: 100px;
+  height: 5px;
+  background: rgba(37, 99, 235, 0.1);
+  border-radius: 9999px;
+  overflow: hidden;
+}
+
+.challengeFill {
+  height: 100%;
+  background: linear-gradient(90deg, $color-primary, $color-accent);
+  border-radius: 9999px;
+}
+
+// ─── Events ───────────────────────────────────────────────────
+
+.eventsList {
+  display: flex;
+  flex-direction: column;
+  gap: $space-3;
+}
+
+.event {
+  display: flex;
+  align-items: flex-start;
+  gap: $space-4;
+}
+
+.eventDate {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, rgba(37, 99, 235, 0.08), rgba(139, 92, 246, 0.06));
+  border-radius: $radius-md;
+  padding: $space-2 $space-3;
+  min-width: 52px;
+  flex-shrink: 0;
+  text-align: center;
+}
+
+.eventDay {
+  font-size: $font-size-xs;
+  font-weight: 700;
+  color: $color-primary;
+  text-transform: uppercase;
+}
+
+.eventNum {
+  font-size: $font-size-lg;
+  font-weight: 800;
+  color: $color-text;
+  line-height: 1.1;
+}
+
+.eventInfo {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: $space-1;
+}
+
+.eventTitle {
+  font-size: $font-size-base;
+  font-weight: 700;
+  color: $color-text;
+  line-height: 1.3;
+}
+
+// ─── CTA Card ─────────────────────────────────────────────────
+
+.ctaCard {
+  margin-top: $space-5;
+}
