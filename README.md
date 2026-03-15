@@ -9,8 +9,8 @@
 ╚══════╝╚═╝     ╚═╝╚═╝      ╚═════╝  ╚══╝╚══╝ ╚═╝  ╚═╝╚══════╝╚═╝  ╚═╝
 ```
 
-### 🩺 **empowHER, to empower**
-## Transforming Chaos Into Clarity, One Visit at a Time
+## 🩺 **empowHER, to empower her**
+
 
 [![Sun Life](https://img.shields.io/badge/SPONSOR-Sun%20Life-00A9E0?style=for-the-badge&logo=data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjQiIGhlaWdodD0iMjQiIHZpZXdCb3g9IjAgMCAyNCAyNCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPGNpcmNsZSBjeD0iMTIiIGN5PSIxMiIgcj0iMTAiIGZpbGw9IndoaXRlIi8+Cjwvc3ZnPg==&labelColor=005EB8)](https://sunlife.ca)
 [![IBM watsonx](https://img.shields.io/badge/SPONSOR-IBM%20watsonx-0062FF?style=for-the-badge&logo=ibm&logoColor=white&labelColor=000000)](https://ibm.com/watsonx)
