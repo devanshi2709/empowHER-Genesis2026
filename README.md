@@ -218,11 +218,6 @@ Perfect handoffs
 - 🚦 **Smart routing** — Tasks automatically sent to right workflows
 - ⚠️ **Gap detection** — Flags missing information before visit ends
 
-#### 💥 The Impact
-
-> **"I got my mornings back. No more staying late to finish notes."**  
-> — Dr. Sarah Chen, OB/GYN
-
 **45 minutes per day** reclaimed per clinician
 
 </td>
@@ -249,11 +244,6 @@ Perfect handoffs
 - 📝 **Step-by-step instructions** — Test prep, medication guidance, what to expect
 - ☑️ **Interactive checklists** — Track completion, send reminders
 - 👨‍⚕️ **Approval gate** — Clinician reviews before patient sees it
-
-#### 💥 The Impact
-
-> **"For the first time, my patients actually knew what to do when they left."**  
-> — Dr. Michael Torres, Women's Health
 
 **Comprehension: 13% → 85%**
 
@@ -284,11 +274,6 @@ Perfect handoffs
 - 📊 **Visual charts** — Recharts shows patterns at a glance
 - 📄 **Return-visit snapshot** — Pre-appointment brief for faster follow-ups
 
-#### 💥 The Impact
-
-> **"The trend graphs saved me 10 minutes every appointment."**  
-> — Dr. Jennifer Park, Gynecology
-
 **3x higher** patient engagement
 
 </td>
@@ -315,11 +300,6 @@ Perfect handoffs
 - 💳 **Benefits viewer** — Shows what's covered under patient's plan
 - 📋 **Provider handoff** — Specialist receives full context, not fragments
 - 🔔 **Status tracking** — Patient and clinic see referral progress
-
-#### 💥 The Impact
-
-> **"Referrals that used to take 4 weeks now happen in 10 days."**  
-> — Maria Rodriguez, Clinic Manager
 
 **Completion: 50% → 90%**
 
