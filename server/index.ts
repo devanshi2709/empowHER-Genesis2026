@@ -6,6 +6,7 @@ import { fileURLToPath } from "url";
 import scanRouter from "./routes/scan.js";
 import explainRouter from "./routes/explain.js";
 import aiTestRouter from "./routes/aiTest.js";
+import checkinRouter from "./routes/checkin.js";
 
 dotenv.config();
 
@@ -21,6 +22,7 @@ app.use("/uploads", express.static(path.join(__dirname, "../uploads")));
 app.use("/api/scan", scanRouter);
 app.use("/api/explain", explainRouter);
 app.use("/api/ai-test", aiTestRouter);
+app.use("/api/checkin", checkinRouter);
 
 app.use((err: Error, _req: express.Request, res: express.Response, _next: express.NextFunction) => {
   console.error("Server error:", err.message);
